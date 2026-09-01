@@ -77,6 +77,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Core.Infrastructure", "Nexus.ProjectManagement.Core.Infrastructure\Nexus.ProjectManagement.Core.Infrastructure.csproj", "{BA0316FE-0576-42A7-BAFD-E63ABA0649FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Workflow", "Nexus.Workflow\Nexus.Workflow.csproj", "{359616E8-A984-4FF2-B5D6-6583E20B0506}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Workflow.Infrastructure", "Nexus.Workflow.Infrastructure\Nexus.Workflow.Infrastructure.csproj", "{2C75559A-6A6C-4205-84E8-E80A6884348E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -195,6 +199,14 @@ Global
 		{BA0316FE-0576-42A7-BAFD-E63ABA0649FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA0316FE-0576-42A7-BAFD-E63ABA0649FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA0316FE-0576-42A7-BAFD-E63ABA0649FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{359616E8-A984-4FF2-B5D6-6583E20B0506}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{359616E8-A984-4FF2-B5D6-6583E20B0506}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{359616E8-A984-4FF2-B5D6-6583E20B0506}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{359616E8-A984-4FF2-B5D6-6583E20B0506}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C75559A-6A6C-4205-84E8-E80A6884348E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C75559A-6A6C-4205-84E8-E80A6884348E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C75559A-6A6C-4205-84E8-E80A6884348E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C75559A-6A6C-4205-84E8-E80A6884348E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -230,6 +242,8 @@ Global
 		{ECD907FE-8D96-46A3-8647-3E6B3C4B462E} = {944631FB-5F12-403B-96B0-01F768A3EAD5}
 		{DD44A353-DFE6-4987-81F9-A227D4E53F3E} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
 		{BA0316FE-0576-42A7-BAFD-E63ABA0649FF} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{359616E8-A984-4FF2-B5D6-6583E20B0506} = {944631FB-5F12-403B-96B0-01F768A3EAD5}
+		{2C75559A-6A6C-4205-84E8-E80A6884348E} = {944631FB-5F12-403B-96B0-01F768A3EAD5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FF57C649-5524-4079-8A73-46AA8951F5A8}
