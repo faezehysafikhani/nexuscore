@@ -3,10 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NexusCore.Application.Approvals;
 using NexusCore.Application.Common;
+using NexusCore.Application.Files;
 using NexusCore.Application.Identity.Interfaces;
 using NexusCore.Application.Platform.Interfaces;
 using NexusCore.Application.Security;
 using NexusCore.Infrastructure.Approvals;
+using NexusCore.Infrastructure.Files;
 using NexusCore.Infrastructure.Identity;
 using NexusCore.Infrastructure.Persistence;
 using NexusCore.Infrastructure.Persistence.Repositories;
@@ -47,6 +49,7 @@ public static class DependencyInjection
         services.AddScoped<DefaultDataSeeder>();
         services.AddUserGroupFeature(configuration);
         services.AddScoped<IApprovalRequester, NullApprovalRequester>();
+        services.AddScoped<IFileStorage, LocalDiskFileStorage>();
 
         return services;
     }
