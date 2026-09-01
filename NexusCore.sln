@@ -81,6 +81,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Workflow", "Nexus.Wor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Workflow.Infrastructure", "Nexus.Workflow.Infrastructure\Nexus.Workflow.Infrastructure.csproj", "{2C75559A-6A6C-4205-84E8-E80A6884348E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Waterfall", "Nexus.ProjectManagement.Waterfall\Nexus.ProjectManagement.Waterfall.csproj", "{4B318887-4176-4723-B29E-DF0CCF523E91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Waterfall.Infrastructure", "Nexus.ProjectManagement.Waterfall.Infrastructure\Nexus.ProjectManagement.Waterfall.Infrastructure.csproj", "{9281C1BA-C3F5-4C31-9B3F-F5A41A6E239A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Risk", "Nexus.ProjectManagement.Risk\Nexus.ProjectManagement.Risk.csproj", "{8D1582A8-5A72-45F5-A96C-2CF7E11DAF48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Risk.Infrastructure", "Nexus.ProjectManagement.Risk.Infrastructure\Nexus.ProjectManagement.Risk.Infrastructure.csproj", "{D8F16F14-0273-40FA-9B62-AEB4461EF43D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -207,6 +215,22 @@ Global
 		{2C75559A-6A6C-4205-84E8-E80A6884348E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C75559A-6A6C-4205-84E8-E80A6884348E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C75559A-6A6C-4205-84E8-E80A6884348E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B318887-4176-4723-B29E-DF0CCF523E91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B318887-4176-4723-B29E-DF0CCF523E91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B318887-4176-4723-B29E-DF0CCF523E91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B318887-4176-4723-B29E-DF0CCF523E91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9281C1BA-C3F5-4C31-9B3F-F5A41A6E239A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9281C1BA-C3F5-4C31-9B3F-F5A41A6E239A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9281C1BA-C3F5-4C31-9B3F-F5A41A6E239A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9281C1BA-C3F5-4C31-9B3F-F5A41A6E239A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D1582A8-5A72-45F5-A96C-2CF7E11DAF48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D1582A8-5A72-45F5-A96C-2CF7E11DAF48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D1582A8-5A72-45F5-A96C-2CF7E11DAF48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D1582A8-5A72-45F5-A96C-2CF7E11DAF48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8F16F14-0273-40FA-9B62-AEB4461EF43D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8F16F14-0273-40FA-9B62-AEB4461EF43D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8F16F14-0273-40FA-9B62-AEB4461EF43D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8F16F14-0273-40FA-9B62-AEB4461EF43D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -244,6 +268,10 @@ Global
 		{BA0316FE-0576-42A7-BAFD-E63ABA0649FF} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
 		{359616E8-A984-4FF2-B5D6-6583E20B0506} = {944631FB-5F12-403B-96B0-01F768A3EAD5}
 		{2C75559A-6A6C-4205-84E8-E80A6884348E} = {944631FB-5F12-403B-96B0-01F768A3EAD5}
+		{4B318887-4176-4723-B29E-DF0CCF523E91} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{9281C1BA-C3F5-4C31-9B3F-F5A41A6E239A} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{8D1582A8-5A72-45F5-A96C-2CF7E11DAF48} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{D8F16F14-0273-40FA-9B62-AEB4461EF43D} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FF57C649-5524-4079-8A73-46AA8951F5A8}
