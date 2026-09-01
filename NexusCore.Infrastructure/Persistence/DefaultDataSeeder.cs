@@ -6,7 +6,15 @@ using NexusCore.Domain.Settings;
 
 namespace NexusCore.Infrastructure.Persistence;
 
-public sealed class DefaultDataSeeder(NexusCoreDbContext dbContext, IPasswordHasher passwordHasher)
+/// <summary>
+/// Seeds the default tenant/admin plus every permission contributed by an installed module.
+/// The permission set comes from <see cref="IPermissionCatalog"/> (one per installed module),
+/// so a module that was never registered contributes nothing here either.
+/// </summary>
+public sealed class DefaultDataSeeder(
+    NexusCoreDbContext dbContext,
+    IPasswordHasher passwordHasher,
+    IEnumerable<IPermissionCatalog> permissionCatalogs)
 {
     public static readonly Guid DefaultTenantId = Guid.Parse("11111111-1111-1111-1111-111111111111");
     public static readonly Guid AdminRoleId = Guid.Parse("22222222-2222-2222-2222-222222222222");
@@ -14,14 +22,18 @@ public sealed class DefaultDataSeeder(NexusCoreDbContext dbContext, IPasswordHas
 
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
-        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
+        await ModuleSchemaInitializer.EnsureCreatedAsync(dbContext, cancellationToken);
 
         if (!await dbContext.Tenants.AnyAsync(cancellationToken))
         {
             await dbContext.Tenants.AddAsync(new Tenant(DefaultTenantId, "Default Organization", "default"), cancellationToken);
         }
 
-        foreach (var permission in IdentityPermissions.All)
+        var allPermissions = permissionCatalogs
+            .SelectMany(catalog => catalog.GetPermissions())
+            .DistinctBy(permission => permission.Name);
+
+        foreach (var permission in allPermissions)
         {
             if (!await dbContext.Permissions.AnyAsync(x => x.Name == permission.Name, cancellationToken))
             {
