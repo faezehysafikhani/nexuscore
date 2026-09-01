@@ -1,7 +1,13 @@
+using Microsoft.AspNetCore.Http;
 using NexusCore.SharedKernel.Results;
 
-namespace NexusCore.Api.Endpoints;
+namespace NexusCore.Application.Common;
 
+/// <summary>
+/// Shared Result -&gt; IResult mapping so every module's endpoint-mapping code (which lives in
+/// each module's own project, not a separate Api-tier project) can use the same conventions
+/// as NexusCore.Api without duplicating this logic.
+/// </summary>
 public static class EndpointResults
 {
     public static IResult ToApiResult(this Result result)

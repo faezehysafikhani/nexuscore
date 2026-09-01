@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using NexusCore.Api.Auth;
 using NexusCore.Api.Endpoints;
 using NexusCore.Application;
 using NexusCore.Application.Identity.Permissions;

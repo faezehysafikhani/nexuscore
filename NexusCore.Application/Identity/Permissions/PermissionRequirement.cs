@@ -1,7 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 
-namespace NexusCore.Api.Auth;
+namespace NexusCore.Application.Identity.Permissions;
 
+/// <summary>
+/// Lives in Application (not the Api host) so every module's own AddXxxApplication() can
+/// register AddAuthorization policies for its own permissions without depending on
+/// NexusCore.Api - the composition host is meant to depend on modules, never the other way.
+/// </summary>
 public sealed class PermissionRequirement(string permission) : IAuthorizationRequirement
 {
     public string Permission { get; } = permission;

@@ -1,4 +1,4 @@
-using NexusCore.Api.Auth;
+using NexusCore.Application.Common;
 using NexusCore.Application.Identity.Dtos;
 using NexusCore.Application.Identity.Interfaces;
 using NexusCore.Application.Identity.Permissions;
