@@ -113,6 +113,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Pro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Progress.Infrastructure", "Nexus.ProjectManagement.Progress.Infrastructure\Nexus.ProjectManagement.Progress.Infrastructure.csproj", "{BC22FAFA-F1EF-452D-B55A-AEBDC14714AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Agile", "Nexus.ProjectManagement.Agile\Nexus.ProjectManagement.Agile.csproj", "{81A1F2A3-2E42-404A-AE9F-91FF1D727B67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Agile.Infrastructure", "Nexus.ProjectManagement.Agile.Infrastructure\Nexus.ProjectManagement.Agile.Infrastructure.csproj", "{473D60DD-FA88-4B90-9054-B97D90F9CC74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Documents", "Nexus.ProjectManagement.Documents\Nexus.ProjectManagement.Documents.csproj", "{97EB459A-3B30-48A6-A558-EDC38347898D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Documents.Infrastructure", "Nexus.ProjectManagement.Documents.Infrastructure\Nexus.ProjectManagement.Documents.Infrastructure.csproj", "{97C86F56-900B-4F97-8CF9-7D640905953F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -303,6 +311,22 @@ Global
 		{BC22FAFA-F1EF-452D-B55A-AEBDC14714AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC22FAFA-F1EF-452D-B55A-AEBDC14714AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC22FAFA-F1EF-452D-B55A-AEBDC14714AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81A1F2A3-2E42-404A-AE9F-91FF1D727B67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81A1F2A3-2E42-404A-AE9F-91FF1D727B67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81A1F2A3-2E42-404A-AE9F-91FF1D727B67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81A1F2A3-2E42-404A-AE9F-91FF1D727B67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{473D60DD-FA88-4B90-9054-B97D90F9CC74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{473D60DD-FA88-4B90-9054-B97D90F9CC74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{473D60DD-FA88-4B90-9054-B97D90F9CC74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{473D60DD-FA88-4B90-9054-B97D90F9CC74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97EB459A-3B30-48A6-A558-EDC38347898D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97EB459A-3B30-48A6-A558-EDC38347898D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97EB459A-3B30-48A6-A558-EDC38347898D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97EB459A-3B30-48A6-A558-EDC38347898D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97C86F56-900B-4F97-8CF9-7D640905953F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97C86F56-900B-4F97-8CF9-7D640905953F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97C86F56-900B-4F97-8CF9-7D640905953F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97C86F56-900B-4F97-8CF9-7D640905953F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -356,6 +380,10 @@ Global
 		{FA57467A-1E86-425C-82B1-6BFF3A0FE0B0} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
 		{BD9554E0-6D37-4C7D-B9C7-34142A94C980} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
 		{BC22FAFA-F1EF-452D-B55A-AEBDC14714AB} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{81A1F2A3-2E42-404A-AE9F-91FF1D727B67} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{473D60DD-FA88-4B90-9054-B97D90F9CC74} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{97EB459A-3B30-48A6-A558-EDC38347898D} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{97C86F56-900B-4F97-8CF9-7D640905953F} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FF57C649-5524-4079-8A73-46AA8951F5A8}
