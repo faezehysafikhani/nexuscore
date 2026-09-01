@@ -1,9 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NexusCore.Application.Approvals;
+using NexusCore.Application.Common;
 using NexusCore.Application.Identity.Interfaces;
 using NexusCore.Application.Platform.Interfaces;
 using NexusCore.Application.Security;
+using NexusCore.Infrastructure.Approvals;
 using NexusCore.Infrastructure.Identity;
 using NexusCore.Infrastructure.Persistence;
 using NexusCore.Infrastructure.Persistence.Repositories;
@@ -23,11 +26,19 @@ public static class DependencyInjection
             options.SigningKey = configuration["Jwt:SigningKey"] ?? options.SigningKey;
             options.AccessTokenMinutes = int.TryParse(configuration["Jwt:AccessTokenMinutes"], out var minutes) ? minutes : options.AccessTokenMinutes;
         });
-        services.AddDbContext<NexusCoreDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserContext, CurrentUserContext>();
+        services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+        services.AddScoped<AuditingInterceptor>();
+        services.AddScoped<DomainEventDispatchInterceptor>();
+
+        services.AddDbContext<NexusCoreDbContext>((provider, options) =>
+            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                .AddInterceptors(
+                    provider.GetRequiredService<AuditingInterceptor>(),
+                    provider.GetRequiredService<DomainEventDispatchInterceptor>()));
+
         services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<NexusCoreDbContext>());
         services.AddScoped<IIdentityRepository, IdentityRepository>();
         services.AddScoped<IPlatformRepository, PlatformRepository>();
@@ -35,6 +46,7 @@ public static class DependencyInjection
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<DefaultDataSeeder>();
         services.AddUserGroupFeature(configuration);
+        services.AddScoped<IApprovalRequester, NullApprovalRequester>();
 
         return services;
     }
