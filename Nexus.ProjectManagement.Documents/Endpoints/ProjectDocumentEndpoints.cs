@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Nexus.ProjectManagement.Documents.Application;
 using Nexus.ProjectManagement.Documents.Application.Dtos;
@@ -58,7 +59,7 @@ public static class ProjectDocumentEndpoints
                 (await service.SubmitForApprovalAsync(id, cancellationToken)).ToApiResult())
             .RequireAuthorization(ProjectDocumentPermissions.Submit);
 
-        group.MapGet("/{id:guid}/summary", async (Guid id, IDocumentSummaryGenerator? generator, CancellationToken cancellationToken) =>
+        group.MapGet("/{id:guid}/summary", async (Guid id, [FromServices] IDocumentSummaryGenerator? generator, CancellationToken cancellationToken) =>
             {
                 if (generator is null)
                 {
@@ -69,7 +70,7 @@ public static class ProjectDocumentEndpoints
             })
             .RequireAuthorization(ProjectDocumentPermissions.View);
 
-        group.MapGet("/{id:guid}/relevance", async (Guid id, Guid projectId, IDocumentRelevanceAnalyzer? analyzer, CancellationToken cancellationToken) =>
+        group.MapGet("/{id:guid}/relevance", async (Guid id, Guid projectId, [FromServices] IDocumentRelevanceAnalyzer? analyzer, CancellationToken cancellationToken) =>
             {
                 if (analyzer is null)
                 {

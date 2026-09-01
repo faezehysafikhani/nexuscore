@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using Nexus.Actions;
 using Nexus.Actions.Application;
 using Nexus.Actions.Infrastructure;
@@ -36,13 +37,61 @@ namespace Nexus.CompositionTests;
 /// </summary>
 public sealed class DiCompositionTests
 {
-    private static IConfiguration BuildConfiguration() =>
-        new ConfigurationBuilder()
-            .AddInMemoryCollection(new Dictionary<string, string?>
+    private static IConfiguration BuildConfiguration() => new FakeConnectionStringConfiguration();
+
+    /// <summary>
+    /// Stands in for ConfigurationBuilder().AddInMemoryCollection(...) without a dependency on
+    /// the Microsoft.Extensions.Configuration.Memory package - only GetConnectionString("DefaultConnection")
+    /// needs to resolve, which routes through GetSection("ConnectionStrings") then an indexer read;
+    /// everything else here is unused by AddDbContext/UseSqlServer and never called.
+    /// </summary>
+    private sealed class FakeConnectionStringConfiguration : IConfiguration
+    {
+        private const string ConnectionString = "Server=.;Database=CompositionTests;Trusted_Connection=True;TrustServerCertificate=True";
+
+        public string? this[string key]
+        {
+            get => key is "DefaultConnection" or "ConnectionStrings:DefaultConnection" ? ConnectionString : null;
+            set => throw new NotSupportedException();
+        }
+
+        public IConfigurationSection GetSection(string key) => new ConfigurationSection(this, key);
+
+        public IEnumerable<IConfigurationSection> GetChildren() => [];
+
+        public IChangeToken GetReloadToken() => NullChangeToken.Instance;
+
+        private sealed class ConfigurationSection(IConfiguration root, string path) : IConfigurationSection
+        {
+            public string? this[string key]
             {
-                ["ConnectionStrings:DefaultConnection"] = "Server=.;Database=CompositionTests;Trusted_Connection=True;TrustServerCertificate=True"
-            })
-            .Build();
+                get => root[key];
+                set => throw new NotSupportedException();
+            }
+
+            public string Key => path;
+            public string Path => path;
+            public string? Value { get => root[path]; set => throw new NotSupportedException(); }
+
+            public IConfigurationSection GetSection(string key) => root.GetSection(key);
+            public IEnumerable<IConfigurationSection> GetChildren() => [];
+            public IChangeToken GetReloadToken() => NullChangeToken.Instance;
+        }
+
+        private sealed class NullChangeToken : IChangeToken
+        {
+            public static readonly NullChangeToken Instance = new();
+            public bool HasChanged => false;
+            public bool ActiveChangeCallbacks => false;
+            public IDisposable RegisterChangeCallback(Action<object?> callback, object? state) => NullDisposable.Instance;
+
+            private sealed class NullDisposable : IDisposable
+            {
+                public static readonly NullDisposable Instance = new();
+                public void Dispose() { }
+            }
+        }
+    }
 
     [Fact]
     public void NexusCoreOnly_ComposesWithoutAnyModule()

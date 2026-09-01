@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Nexus.ProjectManagement.Waterfall.Application;
 using Nexus.ProjectManagement.Waterfall.Application.Dtos;
@@ -41,7 +42,7 @@ public static class ActivityEndpoints
                 (await service.SubmitForApprovalAsync(id, cancellationToken)).ToApiResult())
             .RequireAuthorization(WaterfallPermissions.Submit);
 
-        group.MapPost("/generate-wbs", async (Guid projectId, string projectGoal, IWbsGenerator? generator, CancellationToken cancellationToken) =>
+        group.MapPost("/generate-wbs", async (Guid projectId, string projectGoal, [FromServices] IWbsGenerator? generator, CancellationToken cancellationToken) =>
             {
                 if (generator is null)
                 {

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Nexus.ProjectManagement.StakeholderManagement.Application;
 using Nexus.ProjectManagement.StakeholderManagement.Application.Dtos;
@@ -33,7 +34,7 @@ public static class StakeholderEndpoints
                 (await service.SubmitForApprovalAsync(id, cancellationToken)).ToApiResult())
             .RequireAuthorization(StakeholderPermissions.Submit);
 
-        group.MapPost("/analyze", async (Guid projectId, string projectContext, IStakeholderAnalyzer? analyzer, CancellationToken cancellationToken) =>
+        group.MapPost("/analyze", async (Guid projectId, string projectContext, [FromServices] IStakeholderAnalyzer? analyzer, CancellationToken cancellationToken) =>
             {
                 if (analyzer is null)
                 {
