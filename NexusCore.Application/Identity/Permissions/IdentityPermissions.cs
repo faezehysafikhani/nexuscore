@@ -6,6 +6,7 @@ public static class IdentityPermissions
     public const string UsersCreate = "users.create";
     public const string UsersUpdate = "users.update";
     public const string UsersAssignRoles = "users.assign_roles";
+    public const string UsersAssignPermissions = "users.assign_permissions";
     public const string RolesView = "roles.view";
     public const string RolesCreate = "roles.create";
     public const string RolesUpdate = "roles.update";
@@ -23,6 +24,7 @@ public static class IdentityPermissions
         new(UsersCreate, "Identity", "Create users"),
         new(UsersUpdate, "Identity", "Update users"),
         new(UsersAssignRoles, "Identity", "Assign roles to users"),
+        new(UsersAssignPermissions, "Identity", "Assign permissions to roles"),
         new(RolesView, "Identity", "View roles"),
         new(RolesCreate, "Identity", "Create roles"),
         new(RolesUpdate, "Identity", "Update roles"),

@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Nexus.ProjectManagement.Core;
+using Nexus.ProjectManagement.Core.Endpoints;
+using Nexus.ProjectManagement.Core.Infrastructure;
 using NexusCore.Application;
 using NexusCore.Application.Endpoints;
 using NexusCore.Application.Identity.Permissions;
@@ -45,6 +48,8 @@ builder.Services.AddTicketingInfrastructure(builder.Configuration);
 builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddNotificationApplication();
 builder.Services.AddNotificationInfrastructure(builder.Configuration);
+builder.Services.AddProjectManagementCore();
+builder.Services.AddProjectManagementCoreInfrastructure(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSignalR();
@@ -153,6 +158,7 @@ app.MapChatEndpoints();
 app.MapTicketEndpoints();
 app.MapNotificationEndpoints();
 app.MapEventEndpoints();
+app.MapProjectEndpoints();
 app.MapHub<ChatHub>("/hubs/chat");
 app.MapHub<NotificationHub>("/hubs/notifications");
 

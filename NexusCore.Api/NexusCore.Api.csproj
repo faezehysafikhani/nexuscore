@@ -28,6 +28,8 @@
     <ProjectReference Include="..\Events.Api\Events.Api.csproj" />
     <ProjectReference Include="..\Events.Application\Events.Application.csproj" />
     <ProjectReference Include="..\Events.Infrastructure\Events.Infrastructure.csproj" />
+    <ProjectReference Include="..\Nexus.ProjectManagement.Core.Infrastructure\Nexus.ProjectManagement.Core.Infrastructure.csproj" />
+    <ProjectReference Include="..\Nexus.ProjectManagement.Core\Nexus.ProjectManagement.Core.csproj" />
     <ProjectReference Include="..\NexusCore.Application\NexusCore.Application.csproj" />
     <ProjectReference Include="..\NexusCore.Infrastructure\NexusCore.Infrastructure.csproj" />
     <ProjectReference Include="..\Notifications.Api\Notifications.Api.csproj" />
