@@ -1,13 +1,12 @@
 using Nexus.Workflow.Application.Dtos;
 using Nexus.Workflow.Domain;
-using NexusCore.SharedKernel.Interfaces;
 using NexusCore.SharedKernel.Results;
 
 namespace Nexus.Workflow.Application;
 
 public sealed class WorkflowDefinitionService(
     IWorkflowDefinitionRepository repository,
-    IUnitOfWork unitOfWork) : IWorkflowDefinitionService
+    IWorkflowUnitOfWork unitOfWork) : IWorkflowDefinitionService
 {
     public async Task<Result<IReadOnlyList<WorkflowDefinitionDto>>> ListAsync(Guid tenantId, string? subjectType, CancellationToken cancellationToken)
     {

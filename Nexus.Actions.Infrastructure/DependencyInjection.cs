@@ -1,23 +1,23 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Nexus.ProjectManagement.Waterfall.Application;
+using Nexus.Actions.Application;
 using NexusCore.Infrastructure.Persistence;
 
-namespace Nexus.ProjectManagement.Waterfall.Infrastructure;
+namespace Nexus.Actions.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddWaterfallPlanningInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddActionManagementInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<WaterfallDbContext>((provider, options) =>
+        services.AddDbContext<ActionsDbContext>((provider, options) =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
                 .AddInterceptors(
                     provider.GetRequiredService<AuditingInterceptor>(),
                     provider.GetRequiredService<DomainEventDispatchInterceptor>()));
 
-        services.AddScoped<IWaterfallUnitOfWork>(provider => provider.GetRequiredService<WaterfallDbContext>());
-        services.AddScoped<IActivityRepository, ActivityRepository>();
+        services.AddScoped<IActionsUnitOfWork>(provider => provider.GetRequiredService<ActionsDbContext>());
+        services.AddScoped<IActionItemRepository, ActionItemRepository>();
 
         return services;
     }

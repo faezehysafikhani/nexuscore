@@ -1,6 +1,5 @@
 using Nexus.Workflow.Domain;
 using NexusCore.Application.Approvals;
-using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.Workflow.Application;
 
@@ -13,7 +12,7 @@ namespace Nexus.Workflow.Application;
 public sealed class WorkflowApprovalRequester(
     IWorkflowDefinitionRepository definitionRepository,
     IWorkflowInstanceRepository instanceRepository,
-    IUnitOfWork unitOfWork) : IApprovalRequester
+    IWorkflowUnitOfWork unitOfWork) : IApprovalRequester
 {
     public async Task<ApprovalRequestOutcome> RequestApprovalAsync(ApprovalSubject subject, CancellationToken cancellationToken)
     {

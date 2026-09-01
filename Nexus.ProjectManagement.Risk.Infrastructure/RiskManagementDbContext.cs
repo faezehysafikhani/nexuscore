@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Nexus.ProjectManagement.RiskManagement.Application;
 using Nexus.ProjectManagement.RiskManagement.Domain;
-using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.ProjectManagement.RiskManagement.Infrastructure;
 
 public sealed class RiskManagementDbContext(DbContextOptions<RiskManagementDbContext> options)
-    : DbContext(options), IUnitOfWork
+    : DbContext(options), IRiskUnitOfWork
 {
     public DbSet<Risk> Risks => Set<Risk>();
 

@@ -1,6 +1,5 @@
 using NexusCore.Application.Approvals;
 using NexusCore.SharedKernel.Domain;
-using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.ProjectManagement.Core.Application.EventHandlers;
 
@@ -9,7 +8,7 @@ namespace Nexus.ProjectManagement.Core.Application.EventHandlers;
 /// backend) decides on a subject this module submitted, react by updating the Project - without
 /// ever referencing Workflow. Every handler self-filters on SubjectType.
 /// </summary>
-public sealed class ProjectApprovalGrantedHandler(IProjectRepository repository, IUnitOfWork unitOfWork)
+public sealed class ProjectApprovalGrantedHandler(IProjectRepository repository, IProjectManagementUnitOfWork unitOfWork)
     : IDomainEventHandler<ApprovalGranted>
 {
     public async Task HandleAsync(ApprovalGranted domainEvent, CancellationToken cancellationToken)
@@ -30,7 +29,7 @@ public sealed class ProjectApprovalGrantedHandler(IProjectRepository repository,
     }
 }
 
-public sealed class ProjectApprovalRejectedHandler(IProjectRepository repository, IUnitOfWork unitOfWork)
+public sealed class ProjectApprovalRejectedHandler(IProjectRepository repository, IProjectManagementUnitOfWork unitOfWork)
     : IDomainEventHandler<ApprovalRejected>
 {
     public async Task HandleAsync(ApprovalRejected domainEvent, CancellationToken cancellationToken)

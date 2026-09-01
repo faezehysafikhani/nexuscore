@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Nexus.Calendar.Application;
 using Nexus.Calendar.Domain;
-using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.Calendar.Infrastructure;
 
 public sealed class CalendarDbContext(DbContextOptions<CalendarDbContext> options)
-    : DbContext(options), IUnitOfWork
+    : DbContext(options), ICalendarUnitOfWork
 {
     public DbSet<WorkCalendar> WorkCalendars => Set<WorkCalendar>();
 

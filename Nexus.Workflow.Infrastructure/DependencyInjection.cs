@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.Workflow.Application;
 using NexusCore.Infrastructure.Persistence;
-using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.Workflow.Infrastructure;
 
@@ -17,7 +16,7 @@ public static class DependencyInjection
                     provider.GetRequiredService<AuditingInterceptor>(),
                     provider.GetRequiredService<DomainEventDispatchInterceptor>()));
 
-        services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<WorkflowDbContext>());
+        services.AddScoped<IWorkflowUnitOfWork>(provider => provider.GetRequiredService<WorkflowDbContext>());
         services.AddScoped<IWorkflowDefinitionRepository, WorkflowDefinitionRepository>();
         services.AddScoped<IWorkflowInstanceRepository, WorkflowInstanceRepository>();
 

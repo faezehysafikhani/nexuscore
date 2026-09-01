@@ -7,7 +7,7 @@ namespace Nexus.Organization.Application;
 
 public sealed class OrganizationService(
     IOrganizationUnitRepository repository,
-    IUnitOfWork unitOfWork) : IOrganizationService
+    IOrganizationUnitOfWork unitOfWork) : IOrganizationService
 {
     public async Task<Result<IReadOnlyList<OrganizationUnitDto>>> ListAsync(Guid tenantId, CancellationToken cancellationToken)
     {

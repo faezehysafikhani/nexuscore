@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Nexus.Workflow.Application;
 using Nexus.Workflow.Domain;
-using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.Workflow.Infrastructure;
 
 public sealed class WorkflowDbContext(DbContextOptions<WorkflowDbContext> options)
-    : DbContext(options), IUnitOfWork
+    : DbContext(options), IWorkflowUnitOfWork
 {
     public DbSet<WorkflowDefinition> WorkflowDefinitions => Set<WorkflowDefinition>();
     public DbSet<WorkflowInstance> WorkflowInstances => Set<WorkflowInstance>();

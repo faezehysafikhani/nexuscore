@@ -2,14 +2,13 @@ using Nexus.ProjectManagement.Waterfall.Application.Dtos;
 using Nexus.ProjectManagement.Waterfall.Domain;
 using NexusCore.Application.Approvals;
 using NexusCore.Application.Platform.Interfaces;
-using NexusCore.SharedKernel.Interfaces;
 using NexusCore.SharedKernel.Results;
 
 namespace Nexus.ProjectManagement.Waterfall.Application;
 
 public sealed class ActivityService(
     IActivityRepository repository,
-    IUnitOfWork unitOfWork,
+    IWaterfallUnitOfWork unitOfWork,
     IApprovalRequester approvalRequester,
     IPlatformService platformService) : IActivityService
 {

@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nexus.Calendar.Application;
 using NexusCore.Infrastructure.Persistence;
-using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.Calendar.Infrastructure;
 
@@ -17,7 +16,7 @@ public static class DependencyInjection
                     provider.GetRequiredService<AuditingInterceptor>(),
                     provider.GetRequiredService<DomainEventDispatchInterceptor>()));
 
-        services.AddScoped<IUnitOfWork>(provider => provider.GetRequiredService<CalendarDbContext>());
+        services.AddScoped<ICalendarUnitOfWork>(provider => provider.GetRequiredService<CalendarDbContext>());
         services.AddScoped<IWorkCalendarRepository, WorkCalendarRepository>();
 
         return services;

@@ -1,10 +1,9 @@
 using NexusCore.Application.Approvals;
 using NexusCore.SharedKernel.Domain;
-using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.ProjectManagement.Waterfall.Application.EventHandlers;
 
-public sealed class ActivityApprovalGrantedHandler(IActivityRepository repository, IUnitOfWork unitOfWork)
+public sealed class ActivityApprovalGrantedHandler(IActivityRepository repository, IWaterfallUnitOfWork unitOfWork)
     : IDomainEventHandler<ApprovalGranted>
 {
     public async Task HandleAsync(ApprovalGranted domainEvent, CancellationToken cancellationToken)
@@ -25,7 +24,7 @@ public sealed class ActivityApprovalGrantedHandler(IActivityRepository repositor
     }
 }
 
-public sealed class ActivityApprovalRejectedHandler(IActivityRepository repository, IUnitOfWork unitOfWork)
+public sealed class ActivityApprovalRejectedHandler(IActivityRepository repository, IWaterfallUnitOfWork unitOfWork)
     : IDomainEventHandler<ApprovalRejected>
 {
     public async Task HandleAsync(ApprovalRejected domainEvent, CancellationToken cancellationToken)

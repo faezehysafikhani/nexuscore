@@ -1,7 +1,6 @@
 using Nexus.ProjectManagement.RiskManagement.Application.Dtos;
 using Nexus.ProjectManagement.RiskManagement.Domain;
 using NexusCore.Application.Approvals;
-using NexusCore.SharedKernel.Interfaces;
 using NexusCore.SharedKernel.Results;
 
 namespace Nexus.ProjectManagement.RiskManagement.Application;
@@ -13,7 +12,7 @@ namespace Nexus.ProjectManagement.RiskManagement.Application;
 /// </summary>
 public sealed class RiskService(
     IRiskRepository repository,
-    IUnitOfWork unitOfWork,
+    IRiskUnitOfWork unitOfWork,
     IApprovalRequester approvalRequester) : IRiskService
 {
     public async Task<Result<IReadOnlyList<RiskDto>>> ListByProjectAsync(Guid projectId, CancellationToken cancellationToken)

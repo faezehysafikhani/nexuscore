@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Nexus.ProjectManagement.Core.Application;
 using Nexus.ProjectManagement.Core.Domain;
-using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.ProjectManagement.Core.Infrastructure;
 
 public sealed class ProjectManagementCoreDbContext(DbContextOptions<ProjectManagementCoreDbContext> options)
-    : DbContext(options), IUnitOfWork
+    : DbContext(options), IProjectManagementUnitOfWork
 {
     public DbSet<Project> Projects => Set<Project>();
 

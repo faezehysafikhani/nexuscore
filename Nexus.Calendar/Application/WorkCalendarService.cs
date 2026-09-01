@@ -7,7 +7,7 @@ namespace Nexus.Calendar.Application;
 
 public sealed class WorkCalendarService(
     IWorkCalendarRepository repository,
-    IUnitOfWork unitOfWork) : IWorkCalendarService
+    ICalendarUnitOfWork unitOfWork) : IWorkCalendarService
 {
     public async Task<Result<IReadOnlyList<WorkCalendarDto>>> ListAsync(Guid tenantId, CancellationToken cancellationToken)
     {

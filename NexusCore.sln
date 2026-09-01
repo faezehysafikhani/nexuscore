@@ -89,6 +89,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Ris
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Risk.Infrastructure", "Nexus.ProjectManagement.Risk.Infrastructure\Nexus.ProjectManagement.Risk.Infrastructure.csproj", "{D8F16F14-0273-40FA-9B62-AEB4461EF43D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Actions", "Nexus.Actions\Nexus.Actions.csproj", "{87D74C9B-2DDB-46BA-890E-2291BCF98A67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.Actions.Infrastructure", "Nexus.Actions.Infrastructure\Nexus.Actions.Infrastructure.csproj", "{55EEF9BA-2542-4099-87DA-414836327E05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -231,6 +235,14 @@ Global
 		{D8F16F14-0273-40FA-9B62-AEB4461EF43D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8F16F14-0273-40FA-9B62-AEB4461EF43D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8F16F14-0273-40FA-9B62-AEB4461EF43D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87D74C9B-2DDB-46BA-890E-2291BCF98A67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87D74C9B-2DDB-46BA-890E-2291BCF98A67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87D74C9B-2DDB-46BA-890E-2291BCF98A67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87D74C9B-2DDB-46BA-890E-2291BCF98A67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55EEF9BA-2542-4099-87DA-414836327E05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55EEF9BA-2542-4099-87DA-414836327E05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55EEF9BA-2542-4099-87DA-414836327E05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55EEF9BA-2542-4099-87DA-414836327E05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -272,6 +284,8 @@ Global
 		{9281C1BA-C3F5-4C31-9B3F-F5A41A6E239A} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
 		{8D1582A8-5A72-45F5-A96C-2CF7E11DAF48} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
 		{D8F16F14-0273-40FA-9B62-AEB4461EF43D} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{87D74C9B-2DDB-46BA-890E-2291BCF98A67} = {944631FB-5F12-403B-96B0-01F768A3EAD5}
+		{55EEF9BA-2542-4099-87DA-414836327E05} = {944631FB-5F12-403B-96B0-01F768A3EAD5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FF57C649-5524-4079-8A73-46AA8951F5A8}

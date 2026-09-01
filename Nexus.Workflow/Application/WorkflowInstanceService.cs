@@ -1,13 +1,12 @@
 using Nexus.Workflow.Application.Dtos;
 using Nexus.Workflow.Domain;
-using NexusCore.SharedKernel.Interfaces;
 using NexusCore.SharedKernel.Results;
 
 namespace Nexus.Workflow.Application;
 
 public sealed class WorkflowInstanceService(
     IWorkflowInstanceRepository repository,
-    IUnitOfWork unitOfWork) : IWorkflowInstanceService
+    IWorkflowUnitOfWork unitOfWork) : IWorkflowInstanceService
 {
     public async Task<Result<IReadOnlyList<WorkflowInstanceDto>>> ListPendingForApproverAsync(Guid tenantId, Guid approverUserId, CancellationToken cancellationToken)
     {

@@ -1,14 +1,13 @@
 using Nexus.ProjectManagement.Core.Application.Dtos;
 using Nexus.ProjectManagement.Core.Domain;
 using NexusCore.Application.Approvals;
-using NexusCore.SharedKernel.Interfaces;
 using NexusCore.SharedKernel.Results;
 
 namespace Nexus.ProjectManagement.Core.Application;
 
 public sealed class ProjectService(
     IProjectRepository repository,
-    IUnitOfWork unitOfWork,
+    IProjectManagementUnitOfWork unitOfWork,
     IApprovalRequester approvalRequester) : IProjectService
 {
     public async Task<Result<PagedResult<ProjectDto>>> ListAsync(ListProjectsRequest request, CancellationToken cancellationToken)

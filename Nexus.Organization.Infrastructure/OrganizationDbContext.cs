@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Nexus.Organization.Application;
 using Nexus.Organization.Domain;
-using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.Organization.Infrastructure;
 
 public sealed class OrganizationDbContext(DbContextOptions<OrganizationDbContext> options)
-    : DbContext(options), IUnitOfWork
+    : DbContext(options), IOrganizationUnitOfWork
 {
     public DbSet<OrganizationUnit> OrganizationUnits => Set<OrganizationUnit>();
 
