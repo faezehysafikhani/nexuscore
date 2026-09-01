@@ -4,9 +4,9 @@ using NexusCore.Application.Identity.Interfaces;
 using NexusCore.Application.Identity.Permissions;
 using NexusCore.Application.Platform.Dtos;
 using NexusCore.Application.Platform.Interfaces;
-using NexusCore.Infrastructure;
+using NexusCore.SharedKernel.Interfaces;
 
-namespace NexusCore.Api.Endpoints;
+namespace NexusCore.Application.Endpoints;
 
 public static class IdentityEndpoints
 {
@@ -24,7 +24,7 @@ public static class IdentityEndpoints
             .AllowAnonymous()
             .WithName("RefreshToken");
 
-        auth.MapGet("/me", async (CurrentUserContext currentUser, IIdentityService identityService, CancellationToken cancellationToken) =>
+        auth.MapGet("/me", async (ICurrentUserContext currentUser, IIdentityService identityService, CancellationToken cancellationToken) =>
             {
                 if (currentUser.UserId is null)
                 {

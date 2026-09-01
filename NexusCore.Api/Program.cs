@@ -9,14 +9,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using NexusCore.Api.Endpoints;
 using NexusCore.Application;
+using NexusCore.Application.Endpoints;
 using NexusCore.Application.Identity.Permissions;
 using NexusCore.Infrastructure;
 using NexusCore.Infrastructure.Identity;
 using NexusCore.Infrastructure.Persistence;
 using NexusCore.Infrastructure.Security;
-using NexusCore.SharedKernel.Interfaces;
 using Notifications.Api.Endpoints;
 using Notifications.Api.Hubs;
 using Notifications.Application;
@@ -33,9 +32,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration).WriteTo.Console());
 
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<CurrentUserContext>();
-builder.Services.AddScoped<ICurrentUserContext, CurrentUserContext>();
 builder.Services.AddApplication();
 builder.Services.AddChatApplication();
 builder.Services.AddEventsApplication();

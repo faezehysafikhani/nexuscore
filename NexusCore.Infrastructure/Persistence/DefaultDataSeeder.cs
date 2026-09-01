@@ -22,7 +22,7 @@ public sealed class DefaultDataSeeder(
 
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
-        await dbContext.Database.EnsureCreatedAsync(cancellationToken);
+        await ModuleSchemaInitializer.EnsureCreatedAsync(dbContext, cancellationToken);
 
         if (!await dbContext.Tenants.AnyAsync(cancellationToken))
         {

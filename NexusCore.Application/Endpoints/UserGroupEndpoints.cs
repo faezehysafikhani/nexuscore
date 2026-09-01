@@ -1,9 +1,9 @@
-﻿using NexusCore.Application.Common;
+using NexusCore.Application.Common;
 using NexusCore.Application.Identity.Dtos;
 using NexusCore.Application.Identity.Interfaces;
 using NexusCore.Application.Identity.Permissions;
 
-namespace NexusCore.Api.Endpoints;
+namespace NexusCore.Application.Endpoints;
 
 /// <summary>
 /// Optional user-group feature. Program.cs only calls MapUserGroupEndpoints when
