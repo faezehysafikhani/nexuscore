@@ -105,6 +105,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Kpi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Kpi.Infrastructure", "Nexus.ProjectManagement.Kpi.Infrastructure\Nexus.ProjectManagement.Kpi.Infrastructure.csproj", "{217BCFB3-F7F7-4507-B2B0-174A2428CC9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Stakeholder", "Nexus.ProjectManagement.Stakeholder\Nexus.ProjectManagement.Stakeholder.csproj", "{B780B91B-77BD-4EB1-A27A-DE44067116F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Stakeholder.Infrastructure", "Nexus.ProjectManagement.Stakeholder.Infrastructure\Nexus.ProjectManagement.Stakeholder.Infrastructure.csproj", "{FA57467A-1E86-425C-82B1-6BFF3A0FE0B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Progress", "Nexus.ProjectManagement.Progress\Nexus.ProjectManagement.Progress.csproj", "{BD9554E0-6D37-4C7D-B9C7-34142A94C980}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nexus.ProjectManagement.Progress.Infrastructure", "Nexus.ProjectManagement.Progress.Infrastructure\Nexus.ProjectManagement.Progress.Infrastructure.csproj", "{BC22FAFA-F1EF-452D-B55A-AEBDC14714AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -279,6 +287,22 @@ Global
 		{217BCFB3-F7F7-4507-B2B0-174A2428CC9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{217BCFB3-F7F7-4507-B2B0-174A2428CC9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{217BCFB3-F7F7-4507-B2B0-174A2428CC9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B780B91B-77BD-4EB1-A27A-DE44067116F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B780B91B-77BD-4EB1-A27A-DE44067116F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B780B91B-77BD-4EB1-A27A-DE44067116F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B780B91B-77BD-4EB1-A27A-DE44067116F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA57467A-1E86-425C-82B1-6BFF3A0FE0B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA57467A-1E86-425C-82B1-6BFF3A0FE0B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA57467A-1E86-425C-82B1-6BFF3A0FE0B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA57467A-1E86-425C-82B1-6BFF3A0FE0B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD9554E0-6D37-4C7D-B9C7-34142A94C980}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD9554E0-6D37-4C7D-B9C7-34142A94C980}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD9554E0-6D37-4C7D-B9C7-34142A94C980}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD9554E0-6D37-4C7D-B9C7-34142A94C980}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC22FAFA-F1EF-452D-B55A-AEBDC14714AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC22FAFA-F1EF-452D-B55A-AEBDC14714AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC22FAFA-F1EF-452D-B55A-AEBDC14714AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC22FAFA-F1EF-452D-B55A-AEBDC14714AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -328,6 +352,10 @@ Global
 		{96C10740-E58B-40F3-8AF6-5EEE704457A6} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
 		{CBC085F9-E204-4C2C-B473-6F2A10BE9768} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
 		{217BCFB3-F7F7-4507-B2B0-174A2428CC9C} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{B780B91B-77BD-4EB1-A27A-DE44067116F3} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{FA57467A-1E86-425C-82B1-6BFF3A0FE0B0} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{BD9554E0-6D37-4C7D-B9C7-34142A94C980} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
+		{BC22FAFA-F1EF-452D-B55A-AEBDC14714AB} = {107807CE-E1A2-4D72-A0AA-B395E5752F72}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FF57C649-5524-4079-8A73-46AA8951F5A8}
