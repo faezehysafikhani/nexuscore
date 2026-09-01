@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NexusCore.Application.Identity.Interfaces;
 using NexusCore.Application.Platform.Interfaces;
 using NexusCore.Application.Security;
+using NexusCore.Infrastructure.Identity;
 using NexusCore.Infrastructure.Persistence;
 using NexusCore.Infrastructure.Persistence.Repositories;
 using NexusCore.Infrastructure.Security;
@@ -33,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
         services.AddScoped<IJwtTokenService, JwtTokenService>();
         services.AddScoped<DefaultDataSeeder>();
+        services.AddUserGroupFeature(configuration);
 
         return services;
     }

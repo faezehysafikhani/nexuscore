@@ -14,6 +14,7 @@ using NexusCore.Api.Endpoints;
 using NexusCore.Application;
 using NexusCore.Application.Identity.Permissions;
 using NexusCore.Infrastructure;
+using NexusCore.Infrastructure.Identity;
 using NexusCore.Infrastructure.Persistence;
 using NexusCore.Infrastructure.Security;
 using NexusCore.SharedKernel.Interfaces;
@@ -162,6 +163,10 @@ app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
 app.MapIdentityEndpoints();
+if (builder.Configuration.IsUserGroupFeatureEnabled())
+{
+    app.MapUserGroupEndpoints();
+}
 
 if (builder.Configuration.GetValue("Database:SeedOnStartup", true))
 {

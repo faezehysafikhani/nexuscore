@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NexusCore.Application.Identity.Interfaces;
+using NexusCore.Application.Identity.Permissions;
 using NexusCore.Application.Identity.Services;
 using NexusCore.Infrastructure.Persistence.Repositories;
 
@@ -33,6 +34,7 @@ public static class UserGroupServiceCollectionExtensions
         services.AddScoped<IUserGroupPermissionProvider, UserGroupPermissionProvider>();
         services.AddScoped<IUserGroupRepository, UserGroupRepository>();
         services.AddScoped<IUserGroupService, UserGroupService>();
+        services.AddSingleton<IPermissionCatalog, UserGroupPermissionCatalog>();
         return services;
     }
 }
