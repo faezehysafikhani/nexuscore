@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Nexus.ProjectManagement.RiskManagement.Application;
 using Nexus.ProjectManagement.RiskManagement.Application.Dtos;
@@ -33,7 +34,7 @@ public static class RiskEndpoints
                 (await service.SubmitForApprovalAsync(id, cancellationToken)).ToApiResult())
             .RequireAuthorization(RiskPermissions.Submit);
 
-        group.MapPost("/analyze", async (Guid projectId, string projectContext, IRiskAnalyzer? analyzer, CancellationToken cancellationToken) =>
+        group.MapPost("/analyze", async (Guid projectId, string projectContext, [FromServices] IRiskAnalyzer? analyzer, CancellationToken cancellationToken) =>
             {
                 if (analyzer is null)
                 {

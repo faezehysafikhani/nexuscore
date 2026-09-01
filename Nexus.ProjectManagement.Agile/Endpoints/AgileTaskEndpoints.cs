@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Nexus.ProjectManagement.Agile.Application;
 using Nexus.ProjectManagement.Agile.Application.Dtos;
@@ -41,7 +42,7 @@ public static class AgileTaskEndpoints
                 (await service.SubmitForApprovalAsync(id, cancellationToken)).ToApiResult())
             .RequireAuthorization(AgilePermissions.Submit);
 
-        group.MapPost("/generate", async (Guid projectId, string projectGoal, IAgileTaskGenerator? generator, CancellationToken cancellationToken) =>
+        group.MapPost("/generate", async (Guid projectId, string projectGoal, [FromServices] IAgileTaskGenerator? generator, CancellationToken cancellationToken) =>
             {
                 if (generator is null)
                 {

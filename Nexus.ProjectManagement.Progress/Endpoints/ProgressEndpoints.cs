@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Nexus.ProjectManagement.Progress.Application;
 using Nexus.ProjectManagement.Progress.Application.Dtos;
@@ -33,7 +34,7 @@ public static class ProgressEndpoints
                 (await service.SubmitForApprovalAsync(id, cancellationToken)).ToApiResult())
             .RequireAuthorization(ProgressPermissions.Submit);
 
-        group.MapGet("/executive-summary", async (Guid projectId, IExecutiveSummaryGenerator? generator, CancellationToken cancellationToken) =>
+        group.MapGet("/executive-summary", async (Guid projectId, [FromServices] IExecutiveSummaryGenerator? generator, CancellationToken cancellationToken) =>
             {
                 if (generator is null)
                 {
