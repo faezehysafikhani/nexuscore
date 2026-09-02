@@ -38,7 +38,7 @@ public static class IdentityEndpoints
 
         var users = app.MapGroup("/api/identity/users").WithTags("Users").RequireAuthorization();
 
-        users.MapGet("/", async (Guid? tenantId, int pageNumber, int pageSize, string? search, IIdentityService identityService, CancellationToken cancellationToken) =>
+        users.MapGet("/", async (Guid? tenantId, int? pageNumber, int? pageSize, string? search, IIdentityService identityService, CancellationToken cancellationToken) =>
                 (await identityService.ListUsersAsync(tenantId, pageNumber, pageSize, search, cancellationToken)).ToApiResult())
             .RequireAuthorization(IdentityPermissions.UsersView);
 

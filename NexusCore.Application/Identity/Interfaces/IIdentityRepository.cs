@@ -7,7 +7,11 @@ public interface IIdentityRepository
 {
     Task<User?> GetUserByEmailAsync(string email, string? tenantSlug, CancellationToken cancellationToken);
     Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken);
-    Task<PagedResult<User>> ListUsersAsync(Guid? tenantId, int pageNumber, int pageSize, string? search, CancellationToken cancellationToken);
+    Task<PagedResult<User>> ListUsersAsync(Guid? tenantId,
+    int? pageNumber,
+    int? pageSize,
+    string? search,
+    CancellationToken cancellationToken);
     Task<bool> UserEmailExistsAsync(Guid tenantId, string email, CancellationToken cancellationToken);
     Task AddUserAsync(User user, CancellationToken cancellationToken);
     Task AddRefreshTokenAsync(RefreshToken refreshToken, CancellationToken cancellationToken);

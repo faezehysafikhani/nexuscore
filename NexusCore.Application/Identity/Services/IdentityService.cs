@@ -87,9 +87,15 @@ public sealed class IdentityService(
         return Result.Success(new CurrentUserResponse(ToUserDto(user), permissions));
     }
 
-    public async Task<Result<PagedResult<UserDto>>> ListUsersAsync(Guid? tenantId, int pageNumber, int pageSize, string? search, CancellationToken cancellationToken)
+    public async Task<Result<PagedResult<UserDto>>> ListUsersAsync(Guid? tenantId, int? pageNumber, int? pageSize, string? search, CancellationToken cancellationToken)
     {
-        var users = await repository.ListUsersAsync(tenantId, Math.Max(1, pageNumber), Math.Clamp(pageSize, 1, 100), search, cancellationToken);
+        var users = await repository.ListUsersAsync(
+    tenantId,
+    pageNumber,
+    pageSize,
+    search,
+    cancellationToken);
+
         return Result.Success(new PagedResult<UserDto>(
             users.Items.Select(ToUserDto).ToList(),
             users.PageNumber,

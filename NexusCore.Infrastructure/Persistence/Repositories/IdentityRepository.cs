@@ -23,9 +23,15 @@ public sealed class IdentityRepository(NexusCoreDbContext dbContext) : IIdentity
     public Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken) =>
         IncludeUserGraph(dbContext.Users).SingleOrDefaultAsync(user => user.Id == userId, cancellationToken);
 
-    public async Task<PagedResult<User>> ListUsersAsync(Guid? tenantId, int pageNumber, int pageSize, string? search, CancellationToken cancellationToken)
+    public async Task<PagedResult<User>> ListUsersAsync(
+    Guid? tenantId,
+    int? pageNumber,
+    int? pageSize,
+    string? search,
+    CancellationToken cancellationToken)
     {
         var query = IncludeUserGraph(dbContext.Users).AsQueryable();
+
         if (tenantId.HasValue)
         {
             query = query.Where(user => user.TenantId == tenantId);
@@ -33,16 +39,41 @@ public sealed class IdentityRepository(NexusCoreDbContext dbContext) : IIdentity
 
         if (!string.IsNullOrWhiteSpace(search))
         {
-            query = query.Where(user => user.Email.Contains(search) || user.DisplayName.Contains(search));
+            query = query.Where(user =>
+                user.Email.Contains(search) ||
+                user.DisplayName.Contains(search));
         }
 
         var total = await query.CountAsync(cancellationToken);
-        var items = await query.OrderBy(user => user.DisplayName)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
 
-        return new PagedResult<User>(items, pageNumber, pageSize, total);
+        query = query.OrderBy(user => user.DisplayName);
+
+        List<User> items;
+
+        if (pageNumber.HasValue && pageSize.HasValue)
+        {
+            var safePageNumber = Math.Max(1, pageNumber.Value);
+            var safePageSize = Math.Clamp(pageSize.Value, 1, 100);
+
+            items = await query
+                .Skip((safePageNumber - 1) * safePageSize)
+                .Take(safePageSize)
+                .ToListAsync(cancellationToken);
+
+            return new PagedResult<User>(
+                items,
+                safePageNumber,
+                safePageSize,
+                total);
+        }
+
+        items = await query.ToListAsync(cancellationToken);
+
+        return new PagedResult<User>(
+            items,
+            1,
+            total,
+            total);
     }
 
     public Task<bool> UserEmailExistsAsync(Guid tenantId, string email, CancellationToken cancellationToken)

@@ -231,14 +231,18 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        builder =>
-        {
-            builder.AllowAnyOrigin()
-                   .AllowAnyMethod()
-                   .AllowAnyHeader();
-        });
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        policy
+            .WithOrigins(
+                "https://192.168.100.83:3001",
+                "http://192.168.100.83:3000"
+            )
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
 });
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -248,7 +252,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+
+app.UseCors("FrontendPolicy");
 app.UseSerilogRequestLogging();
 app.UseAuthentication();
 app.UseAuthorization();
