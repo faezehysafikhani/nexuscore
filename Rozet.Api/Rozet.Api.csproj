@@ -15,19 +15,27 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
   </ItemGroup>
 
-  <!-- Rozet is the platform's first real consumer: NexusCore's foundation, plus every Nexus
-       Module a project-management product needs. No Rozet repository exists in this workspace,
-       so this composes the full project-management-relevant capability set as a realistic
-       stand-in - trimming it to Rozet's actual requirements is a matter of deleting the
-       ProjectReference/AddXxx()/MapXxxEndpoints() lines for whatever it turns out not to need,
-       nothing here is load-bearing for any other module. Chat/Ticketing/Notifications/Events
-       are NexusCore.Api's own pre-existing sample-ish capabilities, unrelated to project
-       management, so Rozet does not take them. -->
+  <!-- Rozet is the platform's first real consumer: NexusCore's foundation plus the reusable
+       modules this product chooses to compose. Trimming Rozet is a matter of deleting the
+       matching ProjectReference/AddXxx()/MapXxxEndpoints() lines; nothing here is load-bearing
+       for any other application host. -->
   <ItemGroup>
     <!-- NexusCore foundation -->
+    <ProjectReference Include="..\Chat.Api\Chat.Api.csproj" />
+    <ProjectReference Include="..\Chat.Application\Chat.Application.csproj" />
+    <ProjectReference Include="..\Chat.Infrastructure\Chat.Infrastructure.csproj" />
+    <ProjectReference Include="..\Events.Api\Events.Api.csproj" />
+    <ProjectReference Include="..\Events.Application\Events.Application.csproj" />
+    <ProjectReference Include="..\Events.Infrastructure\Events.Infrastructure.csproj" />
     <ProjectReference Include="..\NexusCore.Application\NexusCore.Application.csproj" />
     <ProjectReference Include="..\NexusCore.Infrastructure\NexusCore.Infrastructure.csproj" />
     <ProjectReference Include="..\NexusCore.SharedKernel\NexusCore.SharedKernel.csproj" />
+    <ProjectReference Include="..\Notifications.Api\Notifications.Api.csproj" />
+    <ProjectReference Include="..\Notifications.Application\Notifications.Application.csproj" />
+    <ProjectReference Include="..\Notifications.Infrastructure\Notifications.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ticketing.Api\Ticketing.Api.csproj" />
+    <ProjectReference Include="..\Ticketing.Application\Ticketing.Application.csproj" />
+    <ProjectReference Include="..\Ticketing.Infrastructure\Ticketing.Infrastructure.csproj" />
 
     <!-- Reusable platform capabilities (not ProjectManagement-specific) -->
     <ProjectReference Include="..\Nexus.Organization\Nexus.Organization.csproj" />

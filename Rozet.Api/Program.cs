@@ -1,3 +1,10 @@
+using Chat.Api.Endpoints;
+using Chat.Api.Hubs;
+using Chat.Application;
+using Chat.Infrastructure;
+using Events.Api.Endpoints;
+using Events.Application;
+using Events.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -66,8 +73,15 @@ using NexusCore.Infrastructure;
 using NexusCore.Infrastructure.Identity;
 using NexusCore.Infrastructure.Persistence;
 using NexusCore.Infrastructure.Security;
+using Notifications.Api.Endpoints;
+using Notifications.Api.Hubs;
+using Notifications.Application;
+using Notifications.Infrastructure;
 using Serilog;
 using System.Text;
+using Ticketing.Api.Endpoints;
+using Ticketing.Application;
+using Ticketing.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -78,6 +92,10 @@ builder.Host.UseSerilog((context, configuration) =>
 // self-contained - deleting any one of them (and its matching Infrastructure/Map* calls below)
 // removes that capability entirely, with nothing left to clean up elsewhere. ---
 builder.Services.AddApplication();
+builder.Services.AddChatApplication();
+builder.Services.AddEventsApplication();
+builder.Services.AddTicketingApplication();
+builder.Services.AddNotificationApplication();
 
 builder.Services.AddOrganizationApplication();
 builder.Services.AddCalendarApplication();
@@ -106,6 +124,10 @@ builder.Services.AddProjectReporting();
 // --- Infrastructure tier: one DbContext per module, all pointed at the same DefaultConnection
 // database (isolated by schema - see each module's own ToTable(name, schema) configuration). ---
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddChatInfrastructure(builder.Configuration);
+builder.Services.AddEventsInfrastructure(builder.Configuration);
+builder.Services.AddTicketingInfrastructure(builder.Configuration);
+builder.Services.AddNotificationInfrastructure(builder.Configuration);
 
 builder.Services.AddOrganizationInfrastructure(builder.Configuration);
 builder.Services.AddCalendarInfrastructure(builder.Configuration);
@@ -129,6 +151,7 @@ builder.Services.AddProjectStrategyAlignmentInfrastructure(builder.Configuration
 
 builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSignalR();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -177,6 +200,19 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SigningKey)),
             ClockSkew = TimeSpan.FromMinutes(1)
         };
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 
 // Every module's own AddXxxApplication() call above already added its own permission policies
@@ -213,6 +249,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet("/", () => Results.Redirect("/swagger")).ExcludeFromDescription();
+
+app.MapChatEndpoints();
+app.MapTicketEndpoints();
+app.MapNotificationEndpoints();
+app.MapEventEndpoints();
+app.MapHub<ChatHub>("/hubs/chat");
+app.MapHub<NotificationHub>("/hubs/notifications");
 
 app.MapIdentityEndpoints();
 if (builder.Configuration.IsUserGroupFeatureEnabled())
