@@ -112,9 +112,13 @@ export async function apiRequest<T = any>(
       headers['X-User-Id'] = userId;
     }
 
+    // Relative to the page's own origin (not API_BASE_URL) so the request always lands on
+    // this app's own server.ts, which proxies /api to the real backend server-side. That
+    // keeps API calls working no matter which host/IP the browser loaded the page from -
+    // API_BASE_URL is only meaningful on the server that runs the proxy (see server.ts).
     const fullUrl = endpoint.startsWith('http://') || endpoint.startsWith('https://')
       ? endpoint
-      : `${API_BASE_URL}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
+      : `${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
 
     const response = await fetch(fullUrl, {
       ...options,
