@@ -4,6 +4,7 @@ using Nexus.Actions.Application;
 using Nexus.Actions.Application.Dtos;
 using Nexus.Actions.Permissions;
 using NexusCore.Application.Common;
+using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.Actions.Endpoints;
 
@@ -13,8 +14,15 @@ public static class ActionEndpoints
     {
         var group = app.MapGroup("/api/actions").WithTags("Actions").RequireAuthorization();
 
-        group.MapGet("/", async (Guid tenantId, Guid? projectId, IActionItemService service, CancellationToken cancellationToken) =>
-                (await service.ListAsync(tenantId, projectId, cancellationToken)).ToApiResult())
+        group.MapGet("/", async (ICurrentUserContext currentUser, Guid? projectId, IActionItemService service, CancellationToken cancellationToken) =>
+            {
+                if (currentUser.TenantId is null)
+                {
+                    return Results.Unauthorized();
+                }
+
+                return (await service.ListAsync(currentUser.TenantId.Value, projectId, cancellationToken)).ToApiResult();
+            })
             .RequireAuthorization(ActionPermissions.View);
 
         group.MapGet("/{id:guid}", async (Guid id, IActionItemService service, CancellationToken cancellationToken) =>

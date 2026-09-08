@@ -4,6 +4,7 @@ using Nexus.Calendar.Application;
 using Nexus.Calendar.Application.Dtos;
 using Nexus.Calendar.Permissions;
 using NexusCore.Application.Common;
+using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.Calendar.Endpoints;
 
@@ -13,8 +14,15 @@ public static class CalendarEndpoints
     {
         var group = app.MapGroup("/api/calendar/work-calendars").WithTags("Calendar").RequireAuthorization();
 
-        group.MapGet("/", async (Guid tenantId, IWorkCalendarService service, CancellationToken cancellationToken) =>
-                (await service.ListAsync(tenantId, cancellationToken)).ToApiResult())
+        group.MapGet("/", async (ICurrentUserContext currentUser, IWorkCalendarService service, CancellationToken cancellationToken) =>
+            {
+                if (currentUser.TenantId is null)
+                {
+                    return Results.Unauthorized();
+                }
+
+                return (await service.ListAsync(currentUser.TenantId.Value, cancellationToken)).ToApiResult();
+            })
             .RequireAuthorization(CalendarPermissions.View);
 
         group.MapGet("/{id:guid}", async (Guid id, IWorkCalendarService service, CancellationToken cancellationToken) =>

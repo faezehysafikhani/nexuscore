@@ -4,6 +4,7 @@ using Nexus.ProjectManagement.Team.Application;
 using Nexus.ProjectManagement.Team.Application.Dtos;
 using Nexus.ProjectManagement.Team.Permissions;
 using NexusCore.Application.Common;
+using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.ProjectManagement.Team.Endpoints;
 
@@ -17,8 +18,15 @@ public static class TeamEndpoints
                 (await service.ListMembersAsync(projectId, cancellationToken)).ToApiResult())
             .RequireAuthorization(TeamPermissions.View);
 
-        members.MapGet("/available-users", async (Guid tenantId, Guid projectId, ITeamService service, CancellationToken cancellationToken) =>
-                (await service.ListAvailableUsersAsync(tenantId, projectId, cancellationToken)).ToApiResult())
+        members.MapGet("/available-users", async (ICurrentUserContext currentUser, Guid projectId, ITeamService service, CancellationToken cancellationToken) =>
+            {
+                if (currentUser.TenantId is null)
+                {
+                    return Results.Unauthorized();
+                }
+
+                return (await service.ListAvailableUsersAsync(currentUser.TenantId.Value, projectId, cancellationToken)).ToApiResult();
+            })
             .RequireAuthorization(TeamPermissions.View);
 
         members.MapPost("/", async (AddProjectMemberRequest request, ITeamService service, CancellationToken cancellationToken) =>

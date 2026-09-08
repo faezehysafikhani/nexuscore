@@ -7,5 +7,11 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 3000,
+    watch: {
+      // This is a monorepo sharing the tree with the .NET solution's own bin/obj build
+      // output - without this, a concurrent `dotnet build` crashes Vite's file watcher
+      // (EBUSY on its transient .tmp files).
+      ignored: ['**/bin/**', '**/obj/**'],
+    },
   }
 });

@@ -4,6 +4,7 @@ using Nexus.StrategyManagement.Application;
 using Nexus.StrategyManagement.Application.Dtos;
 using Nexus.StrategyManagement.Permissions;
 using NexusCore.Application.Common;
+using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.StrategyManagement.Endpoints;
 
@@ -13,8 +14,15 @@ public static class StrategyEndpoints
     {
         var group = app.MapGroup("/api/strategy").WithTags("Strategy").RequireAuthorization();
 
-        group.MapGet("/", async (Guid tenantId, IStrategyService service, CancellationToken cancellationToken) =>
-                (await service.ListAsync(tenantId, cancellationToken)).ToApiResult())
+        group.MapGet("/", async (ICurrentUserContext currentUser, IStrategyService service, CancellationToken cancellationToken) =>
+            {
+                if (currentUser.TenantId is null)
+                {
+                    return Results.Unauthorized();
+                }
+
+                return (await service.ListAsync(currentUser.TenantId.Value, cancellationToken)).ToApiResult();
+            })
             .RequireAuthorization(StrategyPermissions.View);
 
         group.MapGet("/{id:guid}", async (Guid id, IStrategyService service, CancellationToken cancellationToken) =>

@@ -49,8 +49,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ onNavigate }) => {
         api.get('/api/identity/roles'),
         api.get('/api/platform/tenants'),
         api.get('/api/platform/audit-logs?pageNumber=1&pageSize=5'),
-        api.get('/api/tasks'),
-        api.get('/api/tickets'),
+        api.get('/api/actions'),
+        api.get('/api/tickets/my'),
         api.get('/api/events'),
       ]);
 

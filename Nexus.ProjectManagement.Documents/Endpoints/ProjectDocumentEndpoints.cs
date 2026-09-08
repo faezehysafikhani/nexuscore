@@ -7,6 +7,7 @@ using Nexus.ProjectManagement.Documents.Application.Dtos;
 using Nexus.ProjectManagement.Documents.Domain;
 using Nexus.ProjectManagement.Documents.Permissions;
 using NexusCore.Application.Common;
+using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.ProjectManagement.Documents.Endpoints;
 
@@ -38,10 +39,15 @@ public static class ProjectDocumentEndpoints
             .RequireAuthorization(ProjectDocumentPermissions.View);
 
         group.MapPost("/", async (
-                IFormFile file, Guid tenantId, Guid projectId, string description, ProjectDocumentType documentType,
+                IFormFile file, ICurrentUserContext currentUser, Guid projectId, string description, ProjectDocumentType documentType,
                 IProjectDocumentService service, CancellationToken cancellationToken) =>
             {
-                var request = new UploadProjectDocumentRequest(tenantId, projectId, description, documentType, file.FileName, file.ContentType);
+                if (currentUser.TenantId is null)
+                {
+                    return Results.Unauthorized();
+                }
+
+                var request = new UploadProjectDocumentRequest(currentUser.TenantId.Value, projectId, description, documentType, file.FileName, file.ContentType);
                 await using var stream = file.OpenReadStream();
                 return (await service.UploadAsync(request, stream, cancellationToken)).ToApiResult();
             })

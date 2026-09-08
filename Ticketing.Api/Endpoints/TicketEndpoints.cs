@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Hosting.Server;
+using NexusCore.Application.Common;
 using Ticketing.Application.Tickets.Commands.AddComment;
 using Ticketing.Application.Tickets.Commands.AssignTicket;
 using Ticketing.Application.Tickets.Commands.ChangePriority;
@@ -19,12 +20,12 @@ public static class TicketEndpoints
 
         group.MapGet("/my", async (ISender sender, CancellationToken ct) =>
         {
-            return Results.Ok(await sender.Send(new GetMyTicketsQuery(), ct));
+            return (await sender.Send(new GetMyTicketsQuery(), ct)).ToApiResult();
         });
 
         group.MapPost("/", async (CreateTicketCommand command, ISender sender, CancellationToken ct) =>
         {
-            return Results.Ok(await sender.Send(command, ct));
+            return (await sender.Send(command, ct)).ToApiResult();
         });
 
         group.MapPost("/{ticketId:guid}/comments", async (
@@ -33,8 +34,8 @@ public static class TicketEndpoints
             ISender sender,
             CancellationToken ct) =>
         {
-            return Results.Ok(await sender.Send(
-                new AddCommentCommand(ticketId, request.Text), ct));
+            return (await sender.Send(
+                new AddCommentCommand(ticketId, request.Text), ct)).ToApiResult();
         });
 
         group.MapPut("/{ticketId:guid}/assign", async (
@@ -43,16 +44,16 @@ public static class TicketEndpoints
             ISender sender,
             CancellationToken ct) =>
         {
-            return Results.Ok(await sender.Send(
-                new AssignTicketCommand(ticketId, request.UserId), ct));
+            return (await sender.Send(
+                new AssignTicketCommand(ticketId, request.UserId), ct)).ToApiResult();
         });
         group.MapGet("/{ticketId:guid}", async (
     Guid ticketId,
     ISender sender,
     CancellationToken ct) =>
         {
-            return Results.Ok(await sender.Send(
-                new GetTicketDetailsQuery(ticketId), ct));
+            return (await sender.Send(
+                new GetTicketDetailsQuery(ticketId), ct)).ToApiResult();
         });
 
         group.MapPut("/{ticketId:guid}/status", async (
@@ -61,8 +62,8 @@ public static class TicketEndpoints
             ISender sender,
             CancellationToken ct) =>
         {
-            return Results.Ok(await sender.Send(
-                new ChangeStatusCommand(ticketId, request.Status), ct));
+            return (await sender.Send(
+                new ChangeStatusCommand(ticketId, request.Status), ct)).ToApiResult();
         });
 
         group.MapPut("/{ticketId:guid}/priority", async (
@@ -71,8 +72,8 @@ public static class TicketEndpoints
             ISender sender,
             CancellationToken ct) =>
         {
-            return Results.Ok(await sender.Send(
-                new ChangePriorityCommand(ticketId, request.Priority), ct));
+            return (await sender.Send(
+                new ChangePriorityCommand(ticketId, request.Priority), ct)).ToApiResult();
         });
 
         return app;

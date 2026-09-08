@@ -14,8 +14,15 @@ public static class WorkflowEndpoints
     {
         var definitions = app.MapGroup("/api/workflow/definitions").WithTags("Workflow").RequireAuthorization();
 
-        definitions.MapGet("/", async (Guid tenantId, string? subjectType, IWorkflowDefinitionService service, CancellationToken cancellationToken) =>
-                (await service.ListAsync(tenantId, subjectType, cancellationToken)).ToApiResult())
+        definitions.MapGet("/", async (ICurrentUserContext currentUser, string? subjectType, IWorkflowDefinitionService service, CancellationToken cancellationToken) =>
+            {
+                if (currentUser.TenantId is null)
+                {
+                    return Results.Unauthorized();
+                }
+
+                return (await service.ListAsync(currentUser.TenantId.Value, subjectType, cancellationToken)).ToApiResult();
+            })
             .RequireAuthorization(WorkflowPermissions.View);
 
         definitions.MapGet("/{id:guid}", async (Guid id, IWorkflowDefinitionService service, CancellationToken cancellationToken) =>
@@ -44,14 +51,14 @@ public static class WorkflowEndpoints
 
         var approvalCenter = app.MapGroup("/api/workflow/approval-center").WithTags("Workflow - Approval Center").RequireAuthorization();
 
-        approvalCenter.MapGet("/", async (Guid tenantId, ICurrentUserContext currentUser, IWorkflowInstanceService service, CancellationToken cancellationToken) =>
+        approvalCenter.MapGet("/", async (ICurrentUserContext currentUser, IWorkflowInstanceService service, CancellationToken cancellationToken) =>
             {
-                if (currentUser.UserId is null)
+                if (currentUser.TenantId is null || currentUser.UserId is null)
                 {
                     return Results.Unauthorized();
                 }
 
-                return (await service.ListPendingForApproverAsync(tenantId, currentUser.UserId.Value, cancellationToken)).ToApiResult();
+                return (await service.ListPendingForApproverAsync(currentUser.TenantId.Value, currentUser.UserId.Value, cancellationToken)).ToApiResult();
             })
             .RequireAuthorization(WorkflowPermissions.View);
 

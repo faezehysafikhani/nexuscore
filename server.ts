@@ -5,7 +5,7 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 const BACKEND_TARGET = (process.env.VITE_API_BASE_URL || 'http://192.168.100.83:7243').replace(/\/+$/, '');
 
 app.use(cors());

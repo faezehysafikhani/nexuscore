@@ -1,21 +1,29 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# NexusCore
 
-# Run and deploy your AI Studio app
+NexusCore contains a modular .NET 8 API and a React/Vite administration UI.
 
-This contains everything you need to run your app locally.
+## Prerequisites
 
-View your app in AI Studio: https://ai.studio/apps/33eaeb14-737c-46a0-b85d-2277151c744e
+- .NET SDK 8
+- Node.js and npm
+- SQL Server with the connection strings configured in
+  `NexusCore.Api/appsettings.json` or environment variables
 
-## Run Locally
+## Run locally
 
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
+1. Start the API (HTTP port 5005):
+   `dotnet run --project NexusCore.Api/NexusCore.Api.csproj --launch-profile http`
+2. In a second terminal, install the UI dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
+3. Start the administration UI on port 3030:
    `npm run dev`
-# nexuscore
+
+The UI development script points `VITE_API_BASE_URL` at
+`http://localhost:5005`. Override it when the API runs elsewhere.
+
+## Verify
+
+- UI type-check: `npm run lint`
+- UI production build: `npm run build`
+- Backend build: `dotnet build NexusCore.sln`
+- Backend tests: `dotnet test NexusCore.sln`

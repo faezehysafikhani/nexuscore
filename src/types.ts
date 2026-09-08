@@ -119,27 +119,41 @@ export interface ApiResult<T = any> {
 }
 
 // Additional Modules: Task Manager, Chat, Ticketing, Notifications
+// "Tasks" in this platform are Nexus.Actions items - matches Nexus.Actions.Application.Dtos.ActionItemDto
 export interface TaskDto {
   id: string;
   tenantId: string;
   title: string;
   description?: string | null;
-  status: 'Todo' | 'InProgress' | 'Done' | 'Blocked';
-  priority: 'Low' | 'Medium' | 'High' | 'Critical';
-  assignedUserId?: string | null;
-  assignedUserName?: string | null;
-  createdAtUtc: string;
-  dueDateUtc?: string | null;
+  ownerUserId?: string | null;
+  responsibleUserId?: string | null;
+  status: 'Open' | 'InProgress' | 'Completed' | 'Cancelled';
+  organizationUnitId: string;
+  workCalendarId: string;
+  projectId?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
 }
 
-export interface CreateTaskRequest {
+// Matches Nexus.Organization.Application.Dtos.OrganizationUnitDto
+export interface OrganizationUnitDto {
+  id: string;
   tenantId: string;
-  title: string;
-  description?: string;
-  status?: string;
-  priority?: string;
-  assignedUserId?: string;
-  dueDateUtc?: string;
+  name: string;
+  code: string;
+  parentId?: string | null;
+  managerUserId?: string | null;
+  isActive: boolean;
+}
+
+// Matches Nexus.Calendar.Application.Dtos.WorkCalendarDto
+export interface WorkCalendarDto {
+  id: string;
+  tenantId: string;
+  name: string;
+  description?: string | null;
+  workingDays: number;
+  isDefault: boolean;
 }
 
 export interface ConversationDto {
@@ -189,26 +203,30 @@ export interface MessageDto {
   isRead?: boolean;
 }
 
+// Matches Ticketing.Application.Common.Dtos.TicketDto (list view - no description/comments)
 export interface TicketDto {
   id: string;
-  tenantId: string;
+  number: string;
   title: string;
-  description: string;
-  status: 'Open' | 'InProgress' | 'Resolved' | 'Closed';
-  priority: 'Low' | 'Medium' | 'High' | 'Urgent';
-  createdUserId: string;
-  assignedUserId?: string | null;
-  createdAtUtc: string;
-  commentsCount: number;
+  status: string;
+  priority: string;
+  assignedToUserId?: string | null;
+  createdAt: string;
 }
 
+// Matches Ticketing.Application.Common.Dtos.TicketCommentDto
 export interface TicketCommentDto {
   id: string;
-  ticketId: string;
-  authorUserId: string;
-  authorName: string;
-  comment: string;
-  createdAtUtc: string;
+  userId?: string | null;
+  text: string;
+  createdAt: string;
+}
+
+// Matches Ticketing.Application.Common.Dtos.TicketDetailsDto (GET /api/tickets/{id})
+export interface TicketDetailsDto extends TicketDto {
+  description: string;
+  createdByUserId?: string | null;
+  comments: TicketCommentDto[];
 }
 
 export interface NotificationDto {

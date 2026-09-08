@@ -5,6 +5,7 @@ using Nexus.ProjectManagement.Core.Application.Dtos;
 using Nexus.ProjectManagement.Core.Domain;
 using Nexus.ProjectManagement.Core.Permissions;
 using NexusCore.Application.Common;
+using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.ProjectManagement.Core.Endpoints;
 
@@ -15,13 +16,18 @@ public static class ProjectEndpoints
         var group = app.MapGroup("/api/project-management/projects").WithTags("Projects").RequireAuthorization();
 
         group.MapGet("/", async (
-                Guid tenantId, int? pageNumber, int? pageSize, string? search,
+                ICurrentUserContext currentUser, int? pageNumber, int? pageSize, string? search,
                 ProjectType? type, ProjectStatus? status, Guid? organizationUnitId, Guid? managerUserId,
                 ProjectSortBy? sortBy, bool? sortDescending,
                 IProjectService service, CancellationToken cancellationToken) =>
             {
+                if (currentUser.TenantId is null)
+                {
+                    return Results.Unauthorized();
+                }
+
                 var request = new ListProjectsRequest(
-                    tenantId, pageNumber ?? 1, pageSize ?? 20, search, type, status,
+                    currentUser.TenantId.Value, pageNumber ?? 1, pageSize ?? 20, search, type, status,
                     organizationUnitId, managerUserId, sortBy ?? ProjectSortBy.CreatedAtUtc, sortDescending ?? true);
                 return (await service.ListAsync(request, cancellationToken)).ToApiResult();
             })

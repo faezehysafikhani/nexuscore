@@ -30,17 +30,24 @@ export function App() {
 
   const checkCurrentUser = async () => {
     const token = AuthTokenStore.getAccessToken();
-    if (!token) return;
+    if (!token) {
+      setCurrentPage('login');
+      return;
+    }
     try {
-      const res = await api.get<UserDto>('/api/identity/auth/me');
-      if (res.isSuccess && res.value) {
-        setCurrentUser(res.value);
-        if (res.value.id) {
-          AuthTokenStore.set(token, undefined, res.value.id);
+      const res = await api.get<{ user: UserDto; permissions: string[] }>('/api/identity/auth/me');
+      if (res.isSuccess && res.value?.user) {
+        setCurrentUser(res.value.user);
+        if (res.value.user.id) {
+          AuthTokenStore.set(token, undefined, res.value.user.id);
         }
+      } else {
+        AuthTokenStore.clear();
+        setCurrentPage('login');
       }
     } catch {
-      // Ignore
+      AuthTokenStore.clear();
+      setCurrentPage('login');
     }
   };
 
@@ -63,6 +70,18 @@ export function App() {
   };
 
   const renderPage = () => {
+    if (!currentUser && currentPage !== 'login') {
+      return (
+        <Login
+          onLoginSuccess={(user) => {
+            setCurrentUser(user);
+            setCurrentPage('dashboard');
+          }}
+          onNavigate={setCurrentPage}
+        />
+      );
+    }
+
     switch (currentPage) {
       case 'dashboard':
         return <Dashboard onNavigate={setCurrentPage} />;
@@ -91,7 +110,7 @@ export function App() {
       case 'audit-logs':
         return <AuditLogs />;
       case 'tasks':
-        return <TaskManager />;
+        return <TaskManager currentUser={currentUser} />;
       case 'events':
         return <Events />;
       case 'chat':

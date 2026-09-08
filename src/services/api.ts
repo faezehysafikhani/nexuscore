@@ -123,12 +123,14 @@ export async function apiRequest<T = any>(
 
     if (!response.ok) {
       let errMsg = `خطای سرور (${response.status}: ${response.statusText})`;
-      try {
-        const errJson = await response.json();
-        errMsg = errJson.error || errJson.message || errJson.title || errMsg;
-      } catch {
-        const text = await response.text();
-        if (text) errMsg = text;
+      const rawText = await response.text();
+      if (rawText) {
+        try {
+          const errJson = JSON.parse(rawText);
+          errMsg = errJson.error || errJson.message || errJson.title || errJson.detail || errMsg;
+        } catch {
+          errMsg = rawText;
+        }
       }
       return {
         isSuccess: false,

@@ -23,6 +23,7 @@ import {
   ChevronLeft,
 } from 'lucide-react';
 import { UserDto } from '../types';
+import { API_BASE_URL } from '../services/api';
 
 interface LayoutProps {
   currentPage: string;
@@ -100,7 +101,7 @@ export const Layout: React.FC<LayoutProps> = ({
             {/* Quick Status Badge */}
             <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700/60 text-xs text-emerald-400">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>API متصل (Port 3000)</span>
+              <span>API متصل ({API_BASE_URL.replace(/^https?:\/\//, '')})</span>
             </div>
 
             {/* Notifications Bell */}

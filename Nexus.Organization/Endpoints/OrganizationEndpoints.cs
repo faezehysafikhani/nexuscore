@@ -4,6 +4,7 @@ using Nexus.Organization.Application;
 using Nexus.Organization.Application.Dtos;
 using Nexus.Organization.Permissions;
 using NexusCore.Application.Common;
+using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.Organization.Endpoints;
 
@@ -13,8 +14,15 @@ public static class OrganizationEndpoints
     {
         var group = app.MapGroup("/api/organization/units").WithTags("Organization").RequireAuthorization();
 
-        group.MapGet("/", async (Guid tenantId, IOrganizationService service, CancellationToken cancellationToken) =>
-                (await service.ListAsync(tenantId, cancellationToken)).ToApiResult())
+        group.MapGet("/", async (ICurrentUserContext currentUser, IOrganizationService service, CancellationToken cancellationToken) =>
+            {
+                if (currentUser.TenantId is null)
+                {
+                    return Results.Unauthorized();
+                }
+
+                return (await service.ListAsync(currentUser.TenantId.Value, cancellationToken)).ToApiResult();
+            })
             .RequireAuthorization(OrganizationPermissions.View);
 
         group.MapGet("/{id:guid}", async (Guid id, IOrganizationService service, CancellationToken cancellationToken) =>

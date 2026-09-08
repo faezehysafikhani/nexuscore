@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Routing;
 using Nexus.Integrations.ProjectWorkflow.Application;
 using Nexus.Integrations.ProjectWorkflow.Permissions;
 using NexusCore.Application.Common;
+using NexusCore.SharedKernel.Interfaces;
 
 namespace Nexus.Integrations.ProjectWorkflow.Endpoints;
 
@@ -15,8 +16,15 @@ public static class ProjectWorkflowEndpoints
         group.MapGet("/subject-types", () => Results.Ok(ProjectManagementSubjectTypes.All))
             .RequireAuthorization(ProjectWorkflowPermissions.Configure);
 
-        group.MapGet("/projects/{projectId:guid}/overrides", async (Guid tenantId, Guid projectId, IProjectWorkflowConfigurationService service, CancellationToken cancellationToken) =>
-                (await service.ListProjectOverridesAsync(tenantId, projectId, cancellationToken)).ToApiResult())
+        group.MapGet("/projects/{projectId:guid}/overrides", async (ICurrentUserContext currentUser, Guid projectId, IProjectWorkflowConfigurationService service, CancellationToken cancellationToken) =>
+            {
+                if (currentUser.TenantId is null)
+                {
+                    return Results.Unauthorized();
+                }
+
+                return (await service.ListProjectOverridesAsync(currentUser.TenantId.Value, projectId, cancellationToken)).ToApiResult();
+            })
             .RequireAuthorization(ProjectWorkflowPermissions.Configure);
 
         group.MapPost("/projects/{projectId:guid}/overrides", async (Guid projectId, CreateProjectWorkflowOverrideRequest request, IProjectWorkflowConfigurationService service, CancellationToken cancellationToken) =>

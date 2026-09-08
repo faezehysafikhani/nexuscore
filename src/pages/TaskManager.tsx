@@ -3,41 +3,115 @@ import {
   CheckSquare,
   Plus,
   RefreshCw,
-  Clock,
   User,
   AlertCircle,
   CheckCircle2,
-  Filter,
 } from 'lucide-react';
 import { api, PersianMessages } from '../services/api';
-import { TaskDto } from '../types';
+import { TaskDto, OrganizationUnitDto, WorkCalendarDto, UserDto } from '../types';
 
-export const TaskManager: React.FC = () => {
+interface TaskManagerProps {
+  currentUser: UserDto | null;
+}
+
+const IRAN_WORK_WEEK = 125; // Nexus.Calendar.Domain.DayOfWeekMask.IranWorkWeek (Sat-Wed)
+
+export const TaskManager: React.FC<TaskManagerProps> = ({ currentUser }) => {
   const [tasks, setTasks] = useState<TaskDto[]>([]);
+  const [orgUnits, setOrgUnits] = useState<OrganizationUnitDto[]>([]);
+  const [calendars, setCalendars] = useState<WorkCalendarDto[]>([]);
+  const [organizationUnitId, setOrganizationUnitId] = useState('');
+  const [workCalendarId, setWorkCalendarId] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState('Medium');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [message, setMessage] = useState<string | null>(null);
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [settingUp, setSettingUp] = useState(false);
 
   useEffect(() => {
-    loadTasks();
+    loadAll();
   }, []);
 
-  const loadTasks = async () => {
+  const loadAll = async () => {
     setLoading(true);
-    const result = await api.get<TaskDto[]>('/api/tasks');
+    const [tasksRes, unitsRes, calendarsRes] = await Promise.all([
+      api.get<TaskDto[]>('/api/actions'),
+      api.get<OrganizationUnitDto[]>('/api/organization/units'),
+      api.get<WorkCalendarDto[]>('/api/calendar/work-calendars'),
+    ]);
     setLoading(false);
 
-    if (result.isSuccess && result.value) {
-      setTasks(result.value);
-      setIsError(false);
-    } else {
+    if (tasksRes.isSuccess && tasksRes.value) {
+      setTasks(tasksRes.value);
+    } else if (tasksRes.error) {
       setIsError(true);
-      setMessage(PersianMessages.error(result.error));
+      setMessage(PersianMessages.error(tasksRes.error));
     }
+
+    if (unitsRes.isSuccess && unitsRes.value) {
+      setOrgUnits(unitsRes.value);
+      setOrganizationUnitId((prev) => prev || unitsRes.value![0]?.id || '');
+    }
+
+    if (calendarsRes.isSuccess && calendarsRes.value) {
+      setCalendars(calendarsRes.value);
+      setWorkCalendarId((prev) => prev || calendarsRes.value![0]?.id || '');
+    }
+  };
+
+  // Actions require a real Organization Unit and Work Calendar to exist first - there's no
+  // dedicated admin page for either yet, so create one with sensible defaults inline.
+  const quickSetup = async () => {
+    if (!currentUser) return;
+    setSettingUp(true);
+    setMessage(null);
+
+    let unitId = organizationUnitId;
+    let calendarId = workCalendarId;
+
+    if (!unitId) {
+      const res = await api.post<OrganizationUnitDto>('/api/organization/units', {
+        tenantId: currentUser.tenantId,
+        name: 'واحد پیش‌فرض',
+        code: 'DEFAULT',
+        parentId: null,
+      });
+      if (res.isSuccess && res.value) {
+        unitId = res.value.id;
+        setOrgUnits((prev) => [...prev, res.value!]);
+        setOrganizationUnitId(unitId);
+      } else {
+        setIsError(true);
+        setMessage(PersianMessages.error(res.error));
+        setSettingUp(false);
+        return;
+      }
+    }
+
+    if (!calendarId) {
+      const res = await api.post<WorkCalendarDto>('/api/calendar/work-calendars', {
+        tenantId: currentUser.tenantId,
+        name: 'تقویم کاری پیش‌فرض',
+        workingDays: IRAN_WORK_WEEK,
+        isDefault: true,
+      });
+      if (res.isSuccess && res.value) {
+        calendarId = res.value.id;
+        setCalendars((prev) => [...prev, res.value!]);
+        setWorkCalendarId(calendarId);
+      } else {
+        setIsError(true);
+        setMessage(PersianMessages.error(res.error));
+        setSettingUp(false);
+        return;
+      }
+    }
+
+    setIsError(false);
+    setMessage('واحد سازمانی و تقویم کاری پیش‌فرض ایجاد شد. اکنون می‌توانید تسک ثبت کنید.');
+    setSettingUp(false);
   };
 
   const handleCreateTask = async (e: React.FormEvent) => {
@@ -47,12 +121,24 @@ export const TaskManager: React.FC = () => {
       setMessage('عنوان تسک الزامی است.');
       return;
     }
+    if (!currentUser || !organizationUnitId || !workCalendarId) {
+      setIsError(true);
+      setMessage('ابتدا واحد سازمانی و تقویم کاری را تنظیم کنید.');
+      return;
+    }
 
     setLoading(true);
-    const result = await api.post<TaskDto>('/api/tasks', {
+    const result = await api.post<TaskDto>('/api/actions', {
+      tenantId: currentUser.tenantId,
       title,
-      description,
-      priority,
+      description: description || null,
+      ownerUserId: currentUser.id,
+      responsibleUserId: currentUser.id,
+      organizationUnitId,
+      workCalendarId,
+      projectId: null,
+      startDate: null,
+      endDate: null,
     });
     setLoading(false);
 
@@ -61,7 +147,7 @@ export const TaskManager: React.FC = () => {
       setMessage('تسک جدید با موفقیت ایجاد شد.');
       setTitle('');
       setDescription('');
-      loadTasks();
+      loadAll();
     } else {
       setIsError(true);
       setMessage(PersianMessages.error(result.error));
@@ -69,12 +155,12 @@ export const TaskManager: React.FC = () => {
   };
 
   const handleUpdateStatus = async (task: TaskDto, newStatus: string) => {
-    const result = await api.put(`/api/tasks/${task.id}`, {
+    const result = await api.put(`/api/actions/${task.id}/status`, {
       status: newStatus,
     });
 
     if (result.isSuccess) {
-      loadTasks();
+      loadAll();
     } else {
       setIsError(true);
       setMessage(PersianMessages.error(result.error));
@@ -85,6 +171,8 @@ export const TaskManager: React.FC = () => {
     if (statusFilter === 'ALL') return true;
     return t.status === statusFilter;
   });
+
+  const needsSetup = orgUnits.length === 0 || calendars.length === 0;
 
   return (
     <div className="space-y-6">
@@ -99,7 +187,7 @@ export const TaskManager: React.FC = () => {
             <p className="text-xs text-slate-500">برنامه‌ریزی، تخصیص و پیگیری وظایف تیم‌های توسعه و عملیات</p>
           </div>
         </div>
-        <button onClick={loadTasks} disabled={loading} className="btn-secondary-nexus text-xs">
+        <button onClick={loadAll} disabled={loading} className="btn-secondary-nexus text-xs">
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           <span>به‌روزرسانی</span>
         </button>
@@ -124,6 +212,22 @@ export const TaskManager: React.FC = () => {
           </div>
           <button onClick={() => setMessage(null)} className="text-slate-400 hover:text-slate-600">
             ×
+          </button>
+        </div>
+      )}
+
+      {/* First-run setup: Actions need a real Organization Unit + Work Calendar to exist */}
+      {needsSetup && (
+        <div className="p-4 rounded-xl border border-amber-200 bg-amber-50 text-amber-900 text-xs flex items-center justify-between gap-3">
+          <span>
+            هنوز واحد سازمانی یا تقویم کاری تعریف نشده و ثبت تسک به آن‌ها نیاز دارد.
+          </span>
+          <button
+            onClick={quickSetup}
+            disabled={settingUp}
+            className="btn-primary-nexus text-xs bg-amber-600 hover:bg-amber-700 whitespace-nowrap"
+          >
+            {settingUp ? 'در حال ایجاد...' : 'ایجاد خودکار موارد پیش‌فرض'}
           </button>
         </div>
       )}
@@ -162,23 +266,24 @@ export const TaskManager: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1">اولویت</label>
+            <label className="block text-xs font-semibold text-slate-600 mb-1">واحد سازمانی</label>
             <select
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
+              value={organizationUnitId}
+              onChange={(e) => setOrganizationUnitId(e.target.value)}
               className="input-field bg-white"
+              disabled={orgUnits.length === 0}
             >
-              <option value="Low">پایین (Low)</option>
-              <option value="Medium">متوسط (Medium)</option>
-              <option value="High">بالا (High)</option>
-              <option value="Critical">بحرانی (Critical)</option>
+              {orgUnits.length === 0 && <option value="">— موردی موجود نیست —</option>}
+              {orgUnits.map((u) => (
+                <option key={u.id} value={u.id}>{u.name}</option>
+              ))}
             </select>
           </div>
 
           <div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !organizationUnitId || !workCalendarId}
               className="w-full btn-primary-nexus py-2 text-xs bg-amber-600 hover:bg-amber-700"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -196,7 +301,7 @@ export const TaskManager: React.FC = () => {
           </div>
           <div className="flex items-center gap-1.5 text-xs">
             <span className="text-slate-500 font-semibold ml-2">فیلتر وضعیت:</span>
-            {['ALL', 'Todo', 'InProgress', 'Done', 'Blocked'].map((status) => (
+            {['ALL', 'Open', 'InProgress', 'Completed', 'Cancelled'].map((status) => (
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
@@ -208,70 +313,52 @@ export const TaskManager: React.FC = () => {
               >
                 {status === 'ALL'
                   ? 'همه'
-                  : status === 'Todo'
+                  : status === 'Open'
                   ? 'برای انجام'
                   : status === 'InProgress'
                   ? 'در حال انجام'
-                  : status === 'Done'
+                  : status === 'Completed'
                   ? 'انجام شد'
-                  : 'مسدود'}
+                  : 'لغو شده'}
               </button>
             ))}
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredTasks.map((task) => {
-            const priorityColors: Record<string, string> = {
-              Low: 'bg-slate-100 text-slate-700 border-slate-200',
-              Medium: 'bg-blue-50 text-blue-700 border-blue-200',
-              High: 'bg-amber-50 text-amber-800 border-amber-200',
-              Critical: 'bg-rose-50 text-rose-800 border-rose-200',
-            };
-
-            return (
-              <div
-                key={task.id}
-                className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white hover:shadow-md transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-bold text-sm text-slate-900 leading-snug">{task.title}</h3>
-                    <span
-                      className={`text-[10px] px-2 py-0.5 rounded-full font-bold border uppercase shrink-0 ${
-                        priorityColors[task.priority] || 'bg-slate-100 text-slate-600'
-                      }`}
-                    >
-                      {task.priority}
-                    </span>
-                  </div>
-                  {task.description && (
-                    <p className="text-xs text-slate-600 leading-relaxed mb-3">
-                      {task.description}
-                    </p>
-                  )}
-                </div>
-
-                <div className="pt-3 border-t border-slate-200/60 flex items-center justify-between gap-2 text-xs">
-                  <div className="flex items-center gap-1 text-slate-500">
-                    <User className="w-3.5 h-3.5" />
-                    <span>{task.assignedUserName || 'واگذار نشده'}</span>
-                  </div>
-
-                  <select
-                    value={task.status}
-                    onChange={(e) => handleUpdateStatus(task, e.target.value)}
-                    className="text-xs bg-white border border-slate-300 rounded-md px-2 py-1 focus:outline-none focus:border-blue-500 font-semibold"
-                  >
-                    <option value="Todo">برای انجام</option>
-                    <option value="InProgress">در حال انجام</option>
-                    <option value="Done">انجام شد</option>
-                    <option value="Blocked">مسدود شده</option>
-                  </select>
-                </div>
+          {filteredTasks.map((task) => (
+            <div
+              key={task.id}
+              className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-white hover:shadow-md transition-all flex flex-col justify-between"
+            >
+              <div>
+                <h3 className="font-bold text-sm text-slate-900 leading-snug mb-2">{task.title}</h3>
+                {task.description && (
+                  <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                    {task.description}
+                  </p>
+                )}
               </div>
-            );
-          })}
+
+              <div className="pt-3 border-t border-slate-200/60 flex items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-1 text-slate-500">
+                  <User className="w-3.5 h-3.5" />
+                  <span>{orgUnits.find((u) => u.id === task.organizationUnitId)?.name || 'واحد نامشخص'}</span>
+                </div>
+
+                <select
+                  value={task.status}
+                  onChange={(e) => handleUpdateStatus(task, e.target.value)}
+                  className="text-xs bg-white border border-slate-300 rounded-md px-2 py-1 focus:outline-none focus:border-blue-500 font-semibold"
+                >
+                  <option value="Open">برای انجام</option>
+                  <option value="InProgress">در حال انجام</option>
+                  <option value="Completed">انجام شد</option>
+                  <option value="Cancelled">لغو شده</option>
+                </select>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

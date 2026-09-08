@@ -11,7 +11,7 @@ import {
   ChevronLeft,
 } from 'lucide-react';
 import { api, PersianMessages } from '../services/api';
-import { TicketDto, TicketCommentDto, UserDto } from '../types';
+import { TicketDto, TicketDetailsDto, UserDto } from '../types';
 
 interface TicketingProps {
   currentUser: UserDto | null;
@@ -19,8 +19,8 @@ interface TicketingProps {
 
 export const Ticketing: React.FC<TicketingProps> = ({ currentUser }) => {
   const [tickets, setTickets] = useState<TicketDto[]>([]);
-  const [selectedTicket, setSelectedTicket] = useState<TicketDto | null>(null);
-  const [comments, setComments] = useState<TicketCommentDto[]>([]);
+  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
+  const [selectedTicket, setSelectedTicket] = useState<TicketDetailsDto | null>(null);
   const [newComment, setNewComment] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -34,27 +34,29 @@ export const Ticketing: React.FC<TicketingProps> = ({ currentUser }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedTicket) {
-      loadComments(selectedTicket.id);
+    if (selectedTicketId) {
+      loadTicketDetails(selectedTicketId);
+    } else {
+      setSelectedTicket(null);
     }
-  }, [selectedTicket]);
+  }, [selectedTicketId]);
 
   const loadTickets = async () => {
     setLoading(true);
-    const res = await api.get<TicketDto[]>('/api/tickets');
+    const res = await api.get<TicketDto[]>('/api/tickets/my');
     setLoading(false);
     if (res.isSuccess && res.value) {
       setTickets(res.value);
-      if (!selectedTicket && res.value.length > 0) {
-        setSelectedTicket(res.value[0]);
+      if (!selectedTicketId && res.value.length > 0) {
+        setSelectedTicketId(res.value[0].id);
       }
     }
   };
 
-  const loadComments = async (ticketId: string) => {
-    const res = await api.get<TicketCommentDto[]>(`/api/tickets/${ticketId}/comments`);
+  const loadTicketDetails = async (ticketId: string) => {
+    const res = await api.get<TicketDetailsDto>(`/api/tickets/${ticketId}`);
     if (res.isSuccess && res.value) {
-      setComments(res.value);
+      setSelectedTicket(res.value);
     }
   };
 
@@ -67,7 +69,7 @@ export const Ticketing: React.FC<TicketingProps> = ({ currentUser }) => {
     }
 
     setLoading(true);
-    const res = await api.post<TicketDto>('/api/tickets', {
+    const res = await api.post<string>('/api/tickets', {
       title,
       description,
       priority,
@@ -80,7 +82,7 @@ export const Ticketing: React.FC<TicketingProps> = ({ currentUser }) => {
       setTitle('');
       setDescription('');
       await loadTickets();
-      setSelectedTicket(res.value);
+      setSelectedTicketId(res.value);
     } else {
       setIsError(true);
       setMessage(PersianMessages.error(res.error));
@@ -89,31 +91,34 @@ export const Ticketing: React.FC<TicketingProps> = ({ currentUser }) => {
 
   const handleSendComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim() || !selectedTicket) return;
+    if (!newComment.trim() || !selectedTicketId) return;
 
-    const res = await api.post<TicketCommentDto>(
-      `/api/tickets/${selectedTicket.id}/comments`,
-      {
-        comment: newComment.trim(),
-        authorUserId: currentUser?.id || '33333333-3333-3333-3333-333333333333',
-      }
+    const res = await api.post<string>(
+      `/api/tickets/${selectedTicketId}/comments`,
+      { text: newComment.trim() }
     );
 
-    if (res.isSuccess && res.value) {
-      setComments((prev) => [...prev, res.value!]);
+    if (res.isSuccess) {
       setNewComment('');
+      await loadTicketDetails(selectedTicketId);
       loadTickets();
+    } else {
+      setIsError(true);
+      setMessage(PersianMessages.error(res.error));
     }
   };
 
   const handleStatusChange = async (newStatus: string) => {
-    if (!selectedTicket) return;
-    const res = await api.put<TicketDto>(`/api/tickets/${selectedTicket.id}`, {
+    if (!selectedTicketId) return;
+    const res = await api.put(`/api/tickets/${selectedTicketId}/status`, {
       status: newStatus,
     });
-    if (res.isSuccess && res.value) {
-      setSelectedTicket(res.value);
+    if (res.isSuccess) {
+      await loadTicketDetails(selectedTicketId);
       loadTickets();
+    } else {
+      setIsError(true);
+      setMessage(PersianMessages.error(res.error));
     }
   };
 
@@ -229,11 +234,11 @@ export const Ticketing: React.FC<TicketingProps> = ({ currentUser }) => {
 
           <div className="space-y-2 max-h-[500px] overflow-y-auto">
             {tickets.map((t) => {
-              const isSelected = selectedTicket?.id === t.id;
+              const isSelected = selectedTicketId === t.id;
               return (
                 <div
                   key={t.id}
-                  onClick={() => setSelectedTicket(t)}
+                  onClick={() => setSelectedTicketId(t.id)}
                   className={`p-3.5 rounded-xl border cursor-pointer transition-all ${
                     isSelected
                       ? 'bg-rose-50/70 border-rose-300 shadow-xs'
@@ -246,14 +251,11 @@ export const Ticketing: React.FC<TicketingProps> = ({ currentUser }) => {
                       {t.priority}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed mb-2">
-                    {t.description}
+                  <p className="text-[11px] text-slate-500 font-mono mb-2">
+                    {t.number}
                   </p>
                   <div className="flex items-center justify-between text-[10px] text-slate-400">
-                    <span className="flex items-center gap-1">
-                      <MessageCircle className="w-3 h-3" />
-                      {t.commentsCount} نظر
-                    </span>
+                    <span></span>
                     <span
                       className={`px-2 py-0.5 rounded font-semibold ${
                         t.status === 'Resolved'
@@ -311,19 +313,21 @@ export const Ticketing: React.FC<TicketingProps> = ({ currentUser }) => {
                   <span>گفتگو و نظرات کارشناسان</span>
                 </h3>
                 <div className="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
-                  {comments.length > 0 ? (
-                    comments.map((c) => (
+                  {selectedTicket.comments.length > 0 ? (
+                    selectedTicket.comments.map((c) => (
                       <div
                         key={c.id}
                         className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs"
                       >
                         <div className="flex items-center justify-between mb-1">
-                          <span className="font-bold text-slate-800">{c.authorName}</span>
+                          <span className="font-bold text-slate-800">
+                            {c.userId === currentUser?.id ? currentUser?.displayName : 'کارشناس پشتیبانی'}
+                          </span>
                           <span className="text-[10px] text-slate-400 font-mono">
-                            {new Date(c.createdAtUtc).toLocaleTimeString('fa-IR')}
+                            {new Date(c.createdAt).toLocaleTimeString('fa-IR')}
                           </span>
                         </div>
-                        <p className="text-slate-600 leading-relaxed">{c.comment}</p>
+                        <p className="text-slate-600 leading-relaxed">{c.text}</p>
                       </div>
                     ))
                   ) : (

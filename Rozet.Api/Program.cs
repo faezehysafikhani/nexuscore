@@ -152,6 +152,14 @@ builder.Services.AddProjectStrategyAlignmentInfrastructure(builder.Configuration
 builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSignalR();
+
+// Every module's request/response DTOs use enums (TicketPriority, ActionStatus, ProjectStatus,
+// ...), and every frontend sends/expects their string names (e.g. "Medium"), not raw ints - so
+// this must be registered once, globally, for minimal API JSON (de)serialization.
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo

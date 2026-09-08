@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ticketing.Application\Ticketing.Application.csproj" />
+    <ProjectReference Include="..\NexusCore.Application\NexusCore.Application.csproj" />
   </ItemGroup>
 
 </Project>
