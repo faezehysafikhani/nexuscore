@@ -236,19 +236,17 @@ builder.Services.AddAuthorization(options =>
     }
 });
 
+// Allowed origins live in configuration (Cors:AllowedOrigins) rather than hardcoded here, so a
+// deployment can point the frontend at a different host/IP without a code change and rebuild.
+var corsAllowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendPolicy", policy =>
     {
-        policy
-            .WithOrigins(
-                "http://localhost:3030",
-                "http://127.0.0.1:3030",
-                "https://10.132.108.240:3000",
-                "http://10.132.108.240:3000"
-            )
-            .AllowAnyMethod()
-            .AllowAnyHeader();
+        if (corsAllowedOrigins.Length > 0)
+        {
+            policy.WithOrigins(corsAllowedOrigins).AllowAnyMethod().AllowAnyHeader();
+        }
     });
 });
 
