@@ -149,6 +149,26 @@ public sealed class IdentityService(
         return Result.Success(ToUserDto(user));
     }
 
+    public async Task<Result> DeleteUserAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        var user = await repository.GetUserByIdAsync(userId, cancellationToken);
+        if (user is null)
+        {
+            return Result.Failure(Error.NotFound("User was not found."));
+        }
+
+        if (string.Equals(user.Email, "admin@nexus.local", StringComparison.OrdinalIgnoreCase))
+        {
+            return Result.Failure(Error.Validation("The built-in administrator account cannot be deleted."));
+        }
+
+        var auditDetails = user.Email;
+        await repository.RemoveUserAsync(user, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await platformService.AuditAsync("users.delete", nameof(User), user.Id.ToString(), auditDetails, cancellationToken);
+        return Result.Success();
+    }
+
     public async Task<Result> AssignRolesAsync(Guid userId, AssignUserRolesRequest request, CancellationToken cancellationToken)
     {
         var user = await repository.GetUserByIdAsync(userId, cancellationToken);

@@ -11,6 +11,7 @@ public interface IIdentityService
     Task<Result<PagedResult<UserDto>>> ListUsersAsync(Guid? tenantId, int? pageNumber, int? pageSize, string? search, CancellationToken cancellationToken);
     Task<Result<UserDto>> CreateUserAsync(CreateUserRequest request, CancellationToken cancellationToken);
     Task<Result<UserDto>> UpdateUserAsync(Guid userId, UpdateUserRequest request, CancellationToken cancellationToken);
+    Task<Result> DeleteUserAsync(Guid userId, CancellationToken cancellationToken);
     Task<Result> AssignRolesAsync(Guid userId, AssignUserRolesRequest request, CancellationToken cancellationToken);
     Task<Result<IReadOnlyList<RoleDto>>> ListRolesAsync(Guid? tenantId, CancellationToken cancellationToken);
     Task<Result<RoleDto>> CreateRoleAsync(CreateRoleRequest request, CancellationToken cancellationToken);

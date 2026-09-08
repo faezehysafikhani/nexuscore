@@ -17,13 +17,13 @@ public static class NotificationEndpoints
             .WithTags("Notifications");
 
         group.MapGet("/", async (
-            int pageNumber,
-            int pageSize,
+            int? pageNumber,
+            int? pageSize,
             ISender sender,
             CancellationToken ct) =>
         {
             return Results.Ok(await sender.Send(
-                new GetMyNotificationsQuery(pageNumber, pageSize), ct));
+                new GetMyNotificationsQuery(pageNumber ?? 1, pageSize ?? 20), ct));
         });
 
         group.MapGet("/unread-count", async (

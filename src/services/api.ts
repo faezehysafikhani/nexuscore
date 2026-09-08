@@ -2,7 +2,7 @@ import { ApiResult } from '../types';
 
 export const API_BASE_URL: string = (
   (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) ||
-  'http://192.168.100.83:7243'
+  'http://localhost:5151'
 ).replace(/\/+$/, '');
 
 export class AuthTokenStore {

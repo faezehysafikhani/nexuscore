@@ -3,10 +3,16 @@ import cors from 'cors';
 import http from 'http';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
+import {
+  checkSupabaseMigration,
+  SUPABASE_EXPECTED_TABLES,
+  SUPABASE_TARGET_URL,
+  testSupabaseConnection,
+} from './server/supabase';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
-const BACKEND_TARGET = (process.env.VITE_API_BASE_URL || 'http://192.168.100.83:7243').replace(/\/+$/, '');
+const BACKEND_TARGET = (process.env.VITE_API_BASE_URL || 'http://localhost:5151').replace(/\/+$/, '');
 
 app.use(cors());
 app.use(express.json());
@@ -18,6 +24,38 @@ app.get('/api/health', (req: Request, res: Response) => {
     mode: 'production-ready-frontend',
     backendTarget: BACKEND_TARGET,
     timestamp: new Date().toISOString(),
+  });
+});
+
+// Supabase diagnostics belong to the frontend BFF because they target an
+// optional external PostgreSQL service rather than the primary .NET database.
+app.get('/api/platform/supabase/status', async (_req: Request, res: Response) => {
+  const result = await testSupabaseConnection();
+  res.json({
+    projectUrl: result.projectUrl,
+    configured: result.hasKey,
+    keyType: result.keyType,
+    reachable: result.connected,
+    statusCode: result.connected ? 200 : 503,
+    latencyMs: result.latencyMs,
+    statusDetail: result.message,
+    databaseEngine: 'PostgreSQL (Supabase)',
+    tablesExpected: SUPABASE_EXPECTED_TABLES,
+  });
+});
+
+app.post('/api/platform/supabase/check-migration', async (req: Request, res: Response) => {
+  res.json(await checkSupabaseMigration(req.body?.apiKey));
+});
+
+app.post('/api/platform/supabase/test-connection', async (req: Request, res: Response) => {
+  const result = await testSupabaseConnection(req.body?.apiKey);
+  res.json({
+    success: result.connected,
+    statusCode: result.connected ? 200 : 503,
+    message: result.message,
+    latencyMs: result.latencyMs,
+    projectUrl: result.projectUrl || SUPABASE_TARGET_URL,
   });
 });
 

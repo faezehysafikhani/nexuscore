@@ -14,6 +14,7 @@ public interface IIdentityRepository
     CancellationToken cancellationToken);
     Task<bool> UserEmailExistsAsync(Guid tenantId, string email, CancellationToken cancellationToken);
     Task AddUserAsync(User user, CancellationToken cancellationToken);
+    Task RemoveUserAsync(User user, CancellationToken cancellationToken);
     Task AddRefreshTokenAsync(RefreshToken refreshToken, CancellationToken cancellationToken);
     Task<Role?> GetRoleByIdAsync(Guid roleId, CancellationToken cancellationToken);
     Task<IReadOnlyList<Role>> ListRolesAsync(Guid? tenantId, CancellationToken cancellationToken);

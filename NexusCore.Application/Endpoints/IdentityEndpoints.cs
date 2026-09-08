@@ -50,6 +50,10 @@ public static class IdentityEndpoints
                 (await identityService.UpdateUserAsync(userId, request, cancellationToken)).ToApiResult())
             .RequireAuthorization(IdentityPermissions.UsersUpdate);
 
+        users.MapDelete("/{userId:guid}", async (Guid userId, IIdentityService identityService, CancellationToken cancellationToken) =>
+                (await identityService.DeleteUserAsync(userId, cancellationToken)).ToApiResult())
+            .RequireAuthorization(IdentityPermissions.UsersDelete);
+
         users.MapPut("/{userId:guid}/roles", async (Guid userId, AssignUserRolesRequest request, IIdentityService identityService, CancellationToken cancellationToken) =>
                 (await identityService.AssignRolesAsync(userId, request, cancellationToken)).ToApiResult())
             .RequireAuthorization(IdentityPermissions.UsersAssignRoles);

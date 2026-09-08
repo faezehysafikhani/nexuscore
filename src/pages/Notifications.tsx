@@ -25,7 +25,7 @@ export const Notifications: React.FC<NotificationsProps> = ({ onRefreshUnread })
   };
 
   const markAllRead = async () => {
-    const res = await api.post('/api/notifications/read-all', {});
+    const res = await api.put('/api/notifications/read-all', {});
     if (res.isSuccess) {
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
       onRefreshUnread();

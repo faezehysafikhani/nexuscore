@@ -30,7 +30,7 @@ export const Settings: React.FC = () => {
   const [supabaseTesting, setSupabaseTesting] = useState(false);
   const [migrationChecking, setMigrationChecking] = useState(false);
   const [customApiKey, setCustomApiKey] = useState(
-    () => localStorage.getItem('nexus_supabase_api_key') || 'sb_publishable_o_VKiQAd4SEtth11LblCyA_bm2b8-w1'
+    () => localStorage.getItem('nexus_supabase_api_key') || ''
   );
   const [copiedSql, setCopiedSql] = useState(false);
   const [showSqlSchema, setShowSqlSchema] = useState(false);
@@ -107,10 +107,9 @@ export const Settings: React.FC = () => {
       localStorage.setItem('nexus_supabase_api_key', keyToUse);
     }
     try {
-      const url = keyToUse
-        ? `/api/platform/supabase/check-migration?apiKey=${encodeURIComponent(keyToUse)}`
-        : '/api/platform/supabase/check-migration';
-      const res = await api.get<any>(url);
+      const res = await api.post<any>('/api/platform/supabase/check-migration', {
+        apiKey: keyToUse || undefined,
+      });
       if (res.isSuccess && res.value) {
         setMigrationData(res.value);
       }

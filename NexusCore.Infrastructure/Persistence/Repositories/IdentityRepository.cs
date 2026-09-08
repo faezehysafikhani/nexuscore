@@ -84,6 +84,14 @@ public sealed class IdentityRepository(NexusCoreDbContext dbContext) : IIdentity
 
     public async Task AddUserAsync(User user, CancellationToken cancellationToken) => await dbContext.Users.AddAsync(user, cancellationToken);
 
+    public async Task RemoveUserAsync(User user, CancellationToken cancellationToken)
+    {
+        await dbContext.UserGroupMembers
+            .Where(member => member.UserId == user.Id)
+            .ExecuteDeleteAsync(cancellationToken);
+        dbContext.Users.Remove(user);
+    }
+
     public async Task AddRefreshTokenAsync(RefreshToken refreshToken, CancellationToken cancellationToken) =>
         await dbContext.RefreshTokens.AddAsync(refreshToken, cancellationToken);
 
